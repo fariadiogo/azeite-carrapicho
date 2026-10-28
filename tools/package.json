@@ -1,0 +1,8 @@
+{
+  "name": "carrapicho-tools",
+  "private": true,
+  "description": "Screenshot and check scripts for the landing page; see .claude/skills/check-layout",
+  "dependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}

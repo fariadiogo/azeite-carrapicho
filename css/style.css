@@ -1,0 +1,548 @@
+/* Azeite Carrapicho — landing page
+   Palette is taken from the grove: limestone, dry grass, terra rossa, olive leaf,
+   the green of the harvest nets and the black of the bottle. */
+
+:root {
+  --cream: #f4eee2;
+  --paper: #ebe3d3;
+  --stone: #bdb5a6;
+  --ink: #23261c;
+  --ink-soft: #4b4f40;
+  --olive: #4e5a3c;
+  --olive-deep: #262d1d;
+  --leaf: #8d9a7a;
+  --ochre: #b8975a;
+  --terra: #a5583a;
+  --net: #17927a;
+  --verde: #bdd8a3;
+  --maduro: #ced8a4;
+  --dusk-ground: #3a2c30;
+
+  --serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --sans: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --hand: 'Caveat', 'Bradley Hand', cursive;
+  --script: 'Cedarville Cursive', 'Snell Roundhand', cursive;
+
+  --gutter: clamp(16px, 6vw, 96px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { background: var(--cream); -webkit-text-size-adjust: 100%; }
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(17px, 0.5vw + 14px, 19px);
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--cream);
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img { display: block; max-width: 100%; }
+figure { margin: 0; }
+a { color: inherit; }
+
+h1, h2, h3, h4 { font-weight: 400; line-height: 1.08; margin: 0 0 .5em; letter-spacing: -0.012em; text-wrap: balance; }
+h2 { font-size: clamp(2rem, 4.2vw, 3.7rem); }
+h2 em { font-style: italic; color: var(--olive); }
+h3 { font-size: clamp(1.5rem, 2.4vw, 2.2rem); }
+p { margin: 0 0 1em; text-wrap: pretty; }
+em { font-style: italic; }
+::selection { background: var(--net); color: var(--cream); }
+@media (max-width: 600px) { p { -webkit-hyphens: auto; hyphens: auto; } }
+
+/* a little paper grain over everything, like the label */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: 90; pointer-events: none; opacity: .5;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .12 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.eyebrow {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0 14px;
+  font-family: var(--sans);
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  margin: 0 0 1.4em;
+  opacity: .82;
+}
+.eyebrow__n {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 1.2rem; letter-spacing: 0; text-transform: none;
+  font-variant-numeric: lining-nums;
+}
+.eyebrow__n::after { content: ""; width: 34px; height: 1px; background: currentColor; opacity: .5; }
+.dropcap::first-letter {
+  float: left; margin: .08em .12em 0 -.02em;
+  font-size: 4.4em; line-height: .78; font-style: italic; font-weight: 400; color: var(--olive);
+}
+.lead { font-size: 1.32em; line-height: 1.4; }
+.small { font-size: .85em; opacity: .75; }
+.note { font-family: var(--hand); font-size: clamp(1.4rem, 2vw, 1.9rem); line-height: 1.2; color: var(--ink-soft); }
+
+.wordmark { font-family: var(--script); font-size: 1.9rem; line-height: 1; letter-spacing: .01em; }
+
+.fp path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--sans); font-size: .74rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase;
+  text-decoration: none; color: var(--cream); background: var(--ink);
+  padding: 15px 24px; border-radius: 999px; border: 1px solid var(--ink);
+  transition: background .3s, color .3s, transform .3s;
+}
+.btn:hover { background: var(--olive); border-color: var(--olive); transform: translateY(-1px); }
+.btn--small { padding: 10px 16px; font-size: .68rem; }
+.btn--ghost { background: transparent; color: var(--ink); }
+.btn--ghost:hover { background: var(--ink); color: var(--cream); }
+
+/* ---------- progress + nav ---------- */
+
+.progress { position: fixed; inset: 0 0 auto; height: 2px; z-index: 60; pointer-events: none; }
+.progress span { display: block; height: 100%; background: var(--net); transform-origin: 0 50%; transform: scaleX(0); }
+
+.nav {
+  position: fixed; inset: 0 0 auto; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 16px var(--gutter);
+  transition: background .5s, box-shadow .5s, padding .5s;
+}
+.nav.is-solid { background: rgba(244, 238, 226, .86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 1px 0 rgba(35, 38, 28, .08); padding-top: 10px; padding-bottom: 10px; }
+.nav__brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.fp--nav { width: 26px; height: 26px; opacity: .8; }
+.nav__links { display: flex; gap: clamp(14px, 2vw, 30px); }
+.nav__links a {
+  font-family: var(--sans); font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
+  text-decoration: none; opacity: .78; transition: opacity .2s;
+}
+.nav__links a { position: relative; padding: 6px 0; }
+.nav__links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
+.nav__links a:hover, .nav__links a.is-active { opacity: 1; }
+.nav__links a.is-active::after { transform: scaleX(1); }
+.nav__actions { display: flex; align-items: center; gap: 16px; }
+
+@media (max-width: 900px) {
+  .nav__links { display: none; }
+}
+@media (max-width: 520px) {
+  .nav { gap: 10px; }
+  .nav .wordmark { font-size: 1.55rem; }
+  .fp--nav { display: none; }
+  .nav__actions { gap: 10px; }
+  .nav .btn--small { padding: 9px 12px; font-size: .6rem; letter-spacing: .1em; }
+  .hero__title .eyebrow { font-size: .58rem; letter-spacing: .2em; max-width: 26em; line-height: 1.8; }
+}
+
+/* ---------- hero ---------- */
+
+.hero { position: relative; z-index: 2; height: 100vh; height: 100svh; overflow: hidden; background: #efe0c5; }
+.hero__sky {
+  position: absolute; inset: -12% 0 0;
+  background: linear-gradient(180deg, #b3c5d0 0%, #cdd3cc 30%, #e6dcc8 56%, #f2e2c3 74%, #f5e4c4 100%);
+}
+/* The sun is hidden behind the serra at first and rises as you scroll; its
+   wide halo warms the sky. The photo then opens out of it, so both share the
+   same centre (63% 36%). */
+.hero__sun {
+  --s: max(150vmin, 620px);
+  position: absolute; left: calc(63% - var(--s) / 2); top: calc(36% - var(--s) / 2); width: var(--s); height: var(--s);
+  border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle closest-side, #fffef9 0%, #fff6d6 7%, rgba(255, 236, 190, .85) 8.4%, rgba(255, 224, 168, .5) 12.5%, rgba(255, 216, 160, .26) 23%, rgba(255, 212, 158, .14) 45%, rgba(255, 212, 158, 0) 100%);
+}
+.layer { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; display: block; will-change: transform; overflow: visible; }
+.layer--sky > g, .dusk [data-dusk="sky"] > g { animation: drift 80s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translateX(-50px); } to { transform: translateX(60px); } }
+.layer--branch {
+  position: absolute; top: 0; right: 0; z-index: 3; width: clamp(230px, 40vw, 680px); height: auto; aspect-ratio: 560 / 420;
+  overflow: visible; filter: blur(1.2px); will-change: transform; pointer-events: none;
+}
+.layer--branch > g { transform-box: view-box; transform-origin: 100% 0; animation: sway 7s ease-in-out infinite alternate; }
+@keyframes sway { from { transform: rotate(-1.2deg); } to { transform: rotate(1.4deg); } }
+.hero__photo {
+  --r: 0%;
+  position: absolute; inset: 0; z-index: 3; visibility: hidden;
+  -webkit-mask-image: radial-gradient(circle at 63% 36%, #000 var(--r), transparent calc(var(--r) + 14%));
+  mask-image: radial-gradient(circle at 63% 36%, #000 var(--r), transparent calc(var(--r) + 14%));
+}
+.hero__photo img { width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 60%; }
+
+.hero__title {
+  position: absolute; inset: 0; z-index: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 0 16px 16vh; color: #2b3121;
+}
+.hero__title h1 {
+  font-size: clamp(4.4rem, 15.5vw, 16rem); font-weight: 400; font-style: italic; white-space: nowrap;
+  letter-spacing: -0.035em; line-height: .86; margin: .05em 0 .06em; padding-bottom: .14em;
+  clip-path: inset(-1em -1em 0 -1em);
+}
+.hero__title h1 .ch { display: inline-block; }
+.hero__title .eyebrow { margin: 0; }
+.hero__sub { display: flex; align-items: center; font-family: var(--sans); font-size: .76rem; font-weight: 500; letter-spacing: .42em; text-transform: uppercase; margin: 0; }
+.hero__sub::before, .hero__sub::after { content: ""; width: 40px; height: 1px; background: currentColor; opacity: .55; margin: 0 18px; }
+/* Playfair runs wide: on phones the name and the tagline each have to stay on one line */
+@media (max-width: 520px) {
+  .hero__title h1 { font-size: 18vw; }
+  .hero__sub { letter-spacing: .26em; white-space: nowrap; }
+  .hero__sub::before, .hero__sub::after { width: 20px; margin: 0 10px; }
+}
+.hero__sub::before { margin-left: 0; }
+.hero__cue {
+  position: absolute; left: 50%; bottom: 3.5vh; transform: translateX(-50%); z-index: 4;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-family: var(--sans); font-size: .66rem; font-weight: 600; letter-spacing: .28em; text-transform: uppercase; color: var(--cream);
+}
+.hero__cue span { white-space: nowrap; padding: 8px 16px; border-radius: 999px; background: rgba(35, 38, 28, .72); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.hero__cue i { width: 1px; height: 36px; background: var(--cream); transform-origin: top; animation: cue 2.2s ease-in-out infinite; }
+@keyframes cue { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+/* ---------- 01 território ---------- */
+
+.territory { position: relative; z-index: 1; margin-top: -100vh; margin-top: -100svh; background: var(--olive-deep); }
+.territory::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 40vh; z-index: 3; pointer-events: none; background: linear-gradient(180deg, rgba(244, 238, 226, 0), var(--cream)); }
+.territory__stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; }
+.territory__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 60%; }
+.territory__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20, 22, 14, .35) 0%, rgba(20, 22, 14, 0) 30%, rgba(20, 22, 14, 0) 70%, rgba(20, 22, 14, .3) 100%); }
+.territory__panels { position: relative; z-index: 2; margin-top: -100vh; margin-top: -100svh; padding: 100vh 0 55vh; padding-top: 100svh; }
+.panel { min-height: 100vh; display: flex; align-items: center; padding: 12vh var(--gutter); }
+.card--glass {
+  max-width: 540px; padding: clamp(26px, 3.2vw, 48px);
+  background: rgba(244, 238, 226, .88); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-radius: 3px; box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .45);
+}
+.card--glass h2 { font-size: clamp(2rem, 3.6vw, 3.2rem); }
+
+.cycle { background: var(--cream); padding: 12vh var(--gutter) 4vh; text-align: center; }
+.cycle__quote { margin: 0 auto; }
+.cycle__quote p {
+  margin: 0 auto; max-width: 17em; font-size: clamp(1.9rem, 3.6vw, 3.3rem); font-weight: 400; line-height: 1.15; letter-spacing: -0.012em;
+ text-wrap: balance;
+}
+.cycle__quote em { color: var(--olive); }
+.cycle__quote::before { content: ""; display: block; width: 1px; height: 64px; margin: 0 auto 4vh; background: currentColor; opacity: .3; }
+
+.pasture { position: relative; min-height: 165vh; padding: 14vh var(--gutter) 10vh; background: var(--cream); }
+.pasture__text { position: sticky; top: 22vh; max-width: 440px; z-index: 2; }
+.pasture__img { position: absolute; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(40, 30, 15, .4); }
+.pasture__img img { width: 100%; height: 100%; object-fit: cover; }
+.pasture__img--a { right: var(--gutter); top: 10vh; width: 30vw; aspect-ratio: 3 / 4; }
+.pasture__img--b { right: calc(var(--gutter) + 33vw); top: 70vh; width: 19vw; aspect-ratio: 3 / 4; }
+.pasture__img--c { right: calc(var(--gutter) + 4vw); top: 100vh; width: 22vw; aspect-ratio: 3 / 4; }
+
+.doc {
+  display: flex; align-items: center; gap: 16px; margin-top: 30px; padding: 10px 18px 10px 10px;
+  background: #fff8; border: 1px solid rgba(35, 38, 28, .15); border-radius: 6px; cursor: pointer; text-align: left;
+  font: inherit; color: inherit; transition: background .3s;
+}
+.doc:hover { background: #fff; }
+.doc__thumb { position: relative; width: 124px; aspect-ratio: 16 / 9; flex: none; overflow: hidden; border-radius: 3px; background: var(--stone); }
+.doc__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.doc__thumb i { position: absolute; inset: 0; margin: auto; width: 34px; height: 34px; border-radius: 50%; background: rgba(244, 238, 226, .92); }
+.doc__thumb i::after { content: ""; position: absolute; left: 13px; top: 10px; border-left: 11px solid var(--ink); border-top: 7px solid transparent; border-bottom: 7px solid transparent; }
+.doc__meta { display: flex; flex-direction: column; gap: 4px; font-size: .9rem; line-height: 1.3; }
+.doc__meta span { font-family: var(--sans); font-size: .68rem; letter-spacing: .08em; opacity: .7; }
+
+@media (max-width: 900px) {
+  .pasture { min-height: 0; display: grid; gap: 24px; }
+  .pasture__text { position: relative; top: 0; }
+  .pasture__img { position: relative; inset: auto; width: 100%; }
+  .pasture__img--b, .pasture__img--c { width: 70%; justify-self: end; }
+}
+
+/* ---------- 02 pedra sobre pedra ---------- */
+
+.stones { background: var(--cream); }
+.stones__viewport { position: relative; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-top: 17vh; }
+.stones__eyebrow { margin-bottom: 2em; }
+.stones__quote {
+  margin: 0; padding: 0 16px; max-width: 15em; text-align: center;
+  font-size: clamp(2.1rem, 4.8vw, 4.6rem); font-style: italic; font-weight: 400; line-height: 1.1; letter-spacing: -0.015em;
+}
+.stones__quote::before { content: "“"; display: block; height: .5em; font-size: 2.2em; line-height: 1; color: var(--olive); opacity: .3; }
+.stones__quote .w { opacity: .13; transition: opacity .5s; }
+.stones__quote .w.is-on { opacity: 1; }
+.stones__wall { position: absolute; left: 0; bottom: 0; width: 100%; height: 50vh; overflow: visible; }
+/* phones get the bottom four courses only */
+@media (max-width: 900px), (orientation: landscape) and (max-height: 500px) {
+  .stones__wall .stone[data-row="4"], .stones__wall .stone[data-row="5"] { display: none; }
+}
+
+.maze { display: grid; grid-template-columns: 1.35fr 1fr; gap: 6vw; align-items: center; padding: 14vh var(--gutter) 18vh; background: var(--cream); }
+.maze__img { aspect-ratio: 3 / 2; overflow: hidden; }
+.maze__img img { width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 900px) { .maze { grid-template-columns: 1fr; } }
+
+/* ---------- 03 legado ---------- */
+
+.legacy {
+  position: relative; overflow: hidden; padding: 22vh var(--gutter) 0;
+  background-color: var(--paper);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .15 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"), linear-gradient(180deg, var(--cream), var(--paper) 30vh);
+}
+.legacy__year {
+  position: absolute; top: 2vh; right: 2vw; padding-right: .2em; white-space: nowrap; pointer-events: none; line-height: 1;
+  font-size: 28vw; font-weight: 400; font-style: italic; letter-spacing: -0.04em;
+  color: transparent; -webkit-text-stroke: 1.4px rgba(43, 49, 33, .16);
+}
+.legacy__intro { position: relative; display: grid; grid-template-columns: .85fr 1.15fr; gap: 6vw; align-items: center; }
+.legacy__archive .plx { aspect-ratio: 3 / 4; overflow: hidden; box-shadow: 0 30px 70px -30px rgba(40, 30, 15, .5); }
+.plx img { width: 100%; height: 118%; object-fit: cover; margin-top: -9%; }
+.legacy__archive figcaption, .hands figcaption small { font-family: var(--hand); font-size: 1.5rem; margin-top: 12px; color: var(--ink-soft); }
+.legacy__text { max-width: 560px; }
+.legacy__text em { font-style: italic; color: var(--olive); }
+
+.ledger { position: relative; height: 112vh; margin-top: 16vh; }
+.ledger__page { position: absolute; background: #fff; padding: 0; box-shadow: 0 40px 70px -28px rgba(50, 35, 15, .5), 0 2px 6px rgba(0, 0, 0, .12); }
+.ledger__page img { width: 100%; }
+.ledger__page--a { left: 3%; top: 0; width: 31vw; z-index: 1; }
+.ledger__page--b { left: 35%; top: 22%; width: 29vw; z-index: 2; }
+.ledger__page--c { right: 2%; top: 5%; width: 25vw; z-index: 1; }
+.ledger__note { position: absolute; max-width: 15em; margin: 0; z-index: 3; }
+.ledger__note--a { left: 4%; top: 64%; }
+.ledger__note--b { right: 3%; top: 60%; text-align: right; max-width: 11em; }
+
+.legacy__quote { max-width: 24em; margin: 6vh auto 16vh; text-align: center; }
+.legacy__quote p { font-size: clamp(1.6rem, 2.8vw, 2.5rem); font-style: italic; line-height: 1.25; }
+
+.hands { position: relative; height: 100vh; height: 100svh; margin: 0 calc(var(--gutter) * -1); overflow: hidden; }
+.hands img { width: 100%; height: 100%; object-fit: cover; }
+.hands::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 45%; background: linear-gradient(180deg, rgba(38, 45, 29, 0), var(--olive-deep)); pointer-events: none; }
+.hands figcaption { z-index: 1; }
+.hands figcaption {
+  position: absolute; inset: auto 0 12vh; text-align: center; color: var(--cream);
+  font-size: clamp(3rem, 9vw, 8.5rem); font-style: italic; font-weight: 400; line-height: 1; letter-spacing: -0.03em;
+ text-shadow: 0 2px 30px rgba(0, 0, 0, .25);
+}
+.hands figcaption small { display: block; margin-top: 18px; font-family: var(--sans); font-style: normal; font-size: .72rem; font-weight: 600; letter-spacing: .4em; text-transform: uppercase; color: var(--cream); }
+
+@media (max-width: 900px) {
+  .legacy__intro { grid-template-columns: 1fr; }
+  .ledger { height: auto; display: grid; gap: 20px; }
+  .ledger__page, .ledger__note { position: relative; inset: auto; width: 86%; }
+  .ledger__page--b, .ledger__note--b { justify-self: end; }
+}
+
+/* ---------- 04 família ---------- */
+
+.family {
+  color: var(--cream); padding: 14vh var(--gutter) 30vh; overflow: hidden;
+  background: linear-gradient(180deg, var(--olive-deep) 0, var(--olive-deep) calc(100% - 26vh), #e6ebd6 100%);
+}
+.family h2 em { color: #d9cf9f; }
+.family__head { max-width: 880px; }
+.family__row { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(14px, 2vw, 32px); margin-top: 10vh; align-items: start; }
+.member img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+.member:nth-child(even) { margin-top: 12vh; }
+.member figcaption { margin-top: 14px; }
+.member__name { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin: 0; padding-top: 14px; border-top: 1px solid rgba(244, 238, 226, .25); }
+.member__name b { font-weight: 400; font-size: 1.4rem; font-style: italic; }
+.member__name span { font-family: var(--sans); font-size: .62rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; opacity: .7; text-align: right; }
+/* their captions, each with the little drawn arrow they use on Instagram */
+.member__facts {
+  list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px;
+  font-family: var(--sans); font-size: .76rem; line-height: 1.55; letter-spacing: .04em; color: rgba(244, 238, 226, .82);
+}
+.member__facts li { position: relative; padding-left: 26px; }
+.member__facts li::before {
+  content: ""; position: absolute; left: 0; top: .15em; width: 17px; height: 15px; background: #d9cf9f;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 15' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 1.5c.4 6.4 4.2 10 13 10'/%3E%3Cpath d='M11 8l3.6 3.5-3.9 2.7'/%3E%3C/svg%3E") no-repeat 0 0 / contain;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17 15' fill='none' stroke='%23000' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1.5 1.5c.4 6.4 4.2 10 13 10'/%3E%3Cpath d='M11 8l3.6 3.5-3.9 2.7'/%3E%3C/svg%3E") no-repeat 0 0 / contain;
+}
+.family__foot { max-width: 720px; margin: 6vh 0 0 auto; }
+.family .note { color: #d9cf9f; }
+@media (max-width: 900px) {
+  .family__row { grid-template-columns: 1fr 1fr; row-gap: 8vh; }
+  .member:nth-child(even) { margin-top: 6vh; }
+  .member__name { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .member__name span { text-align: left; }
+}
+/* phones: one person per row, the photo beside their captions */
+@media (max-width: 560px) {
+  .family__row { grid-template-columns: 1fr; row-gap: 10vh; }
+  .member { display: grid; grid-template-columns: 40% 1fr; gap: 16px; align-items: start; }
+  .member:nth-child(even) { margin-top: 0; }
+  .member figcaption { margin-top: 0; }
+  .member__name { padding-top: 0; border-top: 0; }
+  .member__facts { margin-top: 14px; font-size: .72rem; letter-spacing: .02em; }
+  .member__facts li { padding-left: 22px; }
+  .member__facts li::before { width: 14px; height: 12px; }
+}
+
+/* ---------- 05 um ano no olival ---------- */
+
+.year { position: relative; height: 100vh; height: 100svh; overflow: hidden; background: #e6ebd6; }
+.season__month, .formats b { font-variant-numeric: lining-nums; }
+.year__track { display: flex; align-items: center; gap: 7vw; height: 100%; padding: 0 var(--gutter); width: max-content; will-change: transform; }
+.year__intro { flex: none; width: min(34vw, 520px); }
+.year__hint { font-family: var(--sans); font-size: .68rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; opacity: .6; }
+.season { flex: none; width: 64vw; height: 70vh; display: grid; grid-template-columns: 1.1fr 1fr; gap: 3.4vw; align-items: center; }
+.season__img { height: 100%; overflow: hidden; }
+.season__img img { width: 118%; max-width: none; height: 100%; object-fit: cover; }
+.season__month { display: block; font-style: italic; font-weight: 400; font-size: clamp(3.4rem, 7.5vw, 8rem); line-height: .95; letter-spacing: -0.03em; color: var(--olive); margin-bottom: .2em; }
+.season h3 { font-family: var(--sans); font-size: .78rem; font-weight: 600; letter-spacing: .26em; text-transform: uppercase; margin-bottom: 1.2em; }
+.season p { max-width: 24em; }
+.year__bar { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 6vh; height: 2px; background: rgba(35, 38, 28, .12); }
+.year__bar span { display: block; height: 100%; background: var(--net); transform-origin: 0 50%; transform: scaleX(0); }
+
+.year__seasons { display: contents; }
+.year__hint--narrow { display: none; }
+
+/* phones: the months become a row you swipe, with the next one peeking in */
+@media (max-width: 899px) {
+  .year { height: auto; padding: 16vh 0 12vh; transition: background-color .8s; }
+  .year__track { display: block; width: auto; height: auto; padding: 0; will-change: auto; }
+  .year__intro { width: auto; padding: 0 var(--gutter); margin-bottom: 6vh; }
+  .year__hint--wide { display: none; }
+  .year__hint--narrow { display: inline; }
+  .year__seasons {
+    display: flex; gap: 14px; overflow-x: auto; padding: 0 var(--gutter);
+    scroll-snap-type: x mandatory; scroll-padding: 0 var(--gutter); overscroll-behavior-x: contain; scrollbar-width: none;
+  }
+  .year__seasons::-webkit-scrollbar { display: none; }
+  .season { flex: 0 0 min(82%, 420px); width: auto; height: auto; display: block; scroll-snap-align: start; }
+  .season__img { height: auto; aspect-ratio: 4 / 5; margin-bottom: 18px; }
+  .season__img img { width: 100%; }
+  .season__month { font-size: clamp(2.8rem, 12vw, 4rem); }
+  .year__bar { position: relative; left: auto; right: auto; bottom: auto; margin: 5vh var(--gutter) 0; }
+}
+
+/* ---------- 06 os azeites ---------- */
+
+.oils { background: linear-gradient(180deg, #e3e9de 0, var(--cream) 34vh); padding-top: 18vh; }
+.oils__head { text-align: center; padding: 0 16px; }
+.oils__head .eyebrow, .stones__eyebrow { justify-content: center; }
+.oils__pair { display: grid; grid-template-columns: 1fr 1fr; margin-top: 8vh; }
+.oil { display: flex; flex-direction: column; align-items: center; padding: 6vh 5vw 12vh; }
+.oil--verde { background: var(--verde); }
+.oil--maduro { background: var(--maduro); }
+.oil__bottle { width: min(440px, 86%); aspect-ratio: 864 / 1080; overflow: hidden; }
+.oil__bottle img { width: 100%; }
+.oil__info { max-width: 430px; text-align: center; }
+.oil__info h3 { font-style: italic; font-size: clamp(2rem, 3.4vw, 3rem); margin: .55em 0 .45em; }
+.oil__tag { display: inline-block; font-family: var(--sans); font-size: .64rem; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; padding: 7px 14px; border-radius: 999px; background: rgba(255, 255, 255, .5); }
+.notes { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; padding: 0; margin: 1.6em 0 0; }
+.notes li { font-family: var(--sans); font-size: .74rem; letter-spacing: .04em; padding: 6px 14px; border: 1px solid rgba(35, 38, 28, .28); border-radius: 999px; }
+.oil__stat { margin-top: 1.6em; font-family: var(--hand); font-size: 1.6rem; }
+
+.order { display: grid; grid-template-columns: 1fr 1fr; gap: 7vw; align-items: center; padding: 18vh var(--gutter); }
+.order__img { aspect-ratio: 3 / 4; overflow: hidden; max-height: 82vh; }
+.order__img img { width: 100%; height: 100%; object-fit: cover; }
+.order__text { max-width: 500px; }
+.formats { list-style: none; padding: 0; margin: 1.4em 0 1.6em; }
+.formats li { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgba(35, 38, 28, .18); }
+.formats b { font-weight: 400; font-style: italic; font-size: 2rem; }
+.formats span { font-family: var(--sans); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; opacity: .75; }
+.order__cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 2em; }
+
+@media (max-width: 900px) {
+  .oils__pair, .order { grid-template-columns: 1fr; }
+}
+
+/* ---------- closing: dusk ---------- */
+
+.dusk { position: relative; height: 140vh; overflow: hidden; background: var(--dusk-ground); }
+.dusk__sky { position: absolute; inset: 0; background: linear-gradient(180deg, var(--cream) 0%, #f2dec6 14%, #edc6a3 32%, #e6a97f 50%, #eeb47e 64%, #f6cf98 78%); }
+.dusk__sun {
+  position: absolute; left: 36%; top: 64%; width: 40vmin; height: 40vmin; transform: translate(-50%, -50%); border-radius: 50%;
+  background: radial-gradient(circle, #fff1cf 0%, rgba(255, 222, 160, .95) 14%, rgba(250, 190, 120, .4) 40%, rgba(250, 180, 110, 0) 70%);
+}
+.dusk__quote {
+  /* anchored to the bottom so it sits in the sky once the scene has settled */
+  position: absolute; left: 0; right: 0; bottom: 58vh; display: flex; flex-direction: column; align-items: center;
+  padding: 0 16px; text-align: center; color: #3b2730;
+}
+.dusk__quote p { margin: 0; font-size: clamp(2.2rem, 5.2vw, 5rem); font-style: italic; font-weight: 400; line-height: 1.08; letter-spacing: -0.02em; max-width: 14em; }
+.dusk__quote .dusk__quote-2 { font-size: clamp(1.3rem, 2.4vw, 2.1rem); margin-top: .6em; opacity: .9; }
+
+/* ---------- footer ---------- */
+
+.foot { background: var(--dusk-ground); color: #efe4d4; padding: 4vh var(--gutter) 5vh; }
+.foot__mark { display: flex; flex-direction: column; align-items: center; gap: 10px; padding-bottom: 9vh; border-bottom: 1px solid rgba(239, 228, 212, .14); }
+.fp--big { width: 96px; height: 96px; color: #e8b57e; }
+.foot .wordmark { font-size: clamp(2.6rem, 5vw, 3.6rem); }
+.foot__tag { font-family: var(--sans); font-size: .66rem; font-weight: 500; letter-spacing: .4em; text-transform: uppercase; opacity: .65; }
+.foot__cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; padding: 6vh 0; }
+.foot h4 { font-family: var(--sans); font-size: .66rem; font-weight: 600; letter-spacing: .24em; text-transform: uppercase; opacity: .6; margin-bottom: 1.2em; }
+.foot p { font-size: .98rem; line-height: 1.7; }
+.foot a { text-decoration-color: rgba(239, 228, 212, .35); text-underline-offset: 4px; }
+.foot__legal { font-family: var(--sans); font-size: .66rem; letter-spacing: .12em; opacity: .5; margin: 0; }
+@media (max-width: 900px) { .foot__cols { grid-template-columns: 1fr; } }
+
+/* ---------- phones held sideways: wide, but only ~400px tall ---------- */
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .nav, .nav.is-solid { padding-top: 8px; padding-bottom: 8px; }
+  .nav .wordmark { font-size: 1.45rem; }
+
+  /* the name is sized by the height, and lifted clear of the trees */
+  .hero__title { padding-bottom: 28svh; }
+  .hero__title h1 { font-size: min(15.5vw, 25svh); }
+
+  .panel { padding: 8svh var(--gutter); }
+  .card--glass { max-width: 660px; padding: 22px 28px; }
+  .card--glass h2 { font-size: 1.7rem; }
+
+  /* photos are capped by the height, so each one fits on screen; the pasture text stays beside its photos */
+  .pasture { min-height: 0; display: grid; grid-template-columns: 1fr auto; gap: 24px 6vw; align-items: start; }
+  .pasture__text { grid-row: 1 / span 3; position: sticky; top: 18svh; }
+  .pasture__img, .pasture__img--b, .pasture__img--c { position: relative; inset: auto; grid-column: 2; width: 60svh; }
+  .maze__img { width: min(100%, 120svh); }
+
+  .stones__viewport { padding-top: 15svh; }
+  .stones__eyebrow { margin-bottom: 1em; }
+  .stones__quote { font-size: 1.75rem; max-width: 22em; }
+
+  .legacy { padding-top: 16svh; }
+  .legacy__intro { grid-template-columns: auto 1fr; gap: 5vw; }
+  .legacy__archive { width: 56svh; }
+  .ledger__page { width: min(86%, 56svh); }
+
+  /* the family two by two, each photo beside its captions */
+  .family__row { grid-template-columns: 1fr 1fr; row-gap: 8svh; }
+  .member { display: grid; grid-template-columns: 38% 1fr; gap: 14px; align-items: start; }
+  .member:nth-child(even) { margin-top: 0; }
+  .member figcaption { margin-top: 0; }
+  .member__name { padding-top: 0; border-top: 0; }
+  .member__facts { margin-top: 12px; font-size: .7rem; letter-spacing: .02em; }
+
+  /* each month a landscape card: photo on the left, words on the right */
+  .year { padding: 14svh 0 10svh; }
+  .year__intro { margin-bottom: 4svh; }
+  .season { flex-basis: min(88%, 640px); display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; }
+  .season__img { height: 66svh; width: auto; aspect-ratio: 4 / 5; margin: 0; }
+  .season__month { font-size: 2.6rem; }
+
+  .oils__pair, .order { grid-template-columns: 1fr 1fr; }
+  .oil__bottle { width: min(440px, 86%, 60svh); }
+  .order { padding: 12svh var(--gutter); }
+}
+
+/* ---------- documentary modal ---------- */
+
+.modal { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: rgba(20, 18, 14, .88); padding: 16px; }
+.modal[hidden] { display: none; }
+.modal__frame { width: min(1100px, 100%); aspect-ratio: 16 / 9; background: #000; }
+.modal__frame iframe { width: 100%; height: 100%; border: 0; }
+.modal__close { position: absolute; top: 16px; right: 20px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--cream); font-size: 1.6rem; line-height: 1; cursor: pointer; }
+
+/* ---------- no-motion fallback ---------- */
+
+.no-motion .stones__quote .w { opacity: 1; }
+.no-motion .hero__sun { opacity: 1; }
+.no-motion .hero__cue i { display: none; }
+/* without the scroll ride, wide screens stack the months; phones keep their swipe row */
+@media (min-width: 900px) {
+  .no-motion .year { height: auto; }
+  .no-motion .year__track { flex-direction: column; align-items: stretch; width: auto; gap: 10vh; padding: 16vh var(--gutter); }
+  .no-motion .season { width: auto; height: auto; }
+  .no-motion .season__img { aspect-ratio: 4 / 3; }
+  .no-motion .season__img img { width: 100%; }
+  .no-motion .year__hint, .no-motion .year__bar { display: none; }
+}

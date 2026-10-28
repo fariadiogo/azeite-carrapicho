@@ -1,0 +1,3 @@
+.DS_Store
+# tools/node_modules can be a symlink, so no trailing slash
+node_modules
