@@ -9,7 +9,7 @@ This page has to work at very different shapes, and most bugs so far showed up a
 
 ## 1. Setup
 
-1. Make sure the site is served on port 4173. Start it if it isn't, with `python3 -m http.server 4173 --bind 127.0.0.1` from the project root in the background, or `preview_start` with `"carrapicho"`.
+1. Make sure the site is served on port 4173. Start it if it isn't, with `preview_start` with `"carrapicho"`, or with `python3 -m http.server 4173 --bind 127.0.0.1 --directory site` from the project root in the background. It must serve `site/`, not the project root.
 2. If `tools/node_modules` is missing, install it once with `npm install --prefix tools`.
 3. Write the screenshots to your scratchpad, not into the project.
 
@@ -30,6 +30,8 @@ Shoot the sections you touched, plus their neighbours. For example:
 node tools/shoot.mjs 1440 900 "$OUT/d" "hero=@0" "wall=.stones@160" "fam=.family@40" "year=.year@150"
 MOBILE=1 node tools/shoot.mjs 844 390 "$OUT/l" "hero=@0" "wall=.stones@160" "year=.year@25"
 ```
+
+The shell is zsh, which doesn't split an unquoted variable into words. If you keep the specs in a variable, pass it as `${=SPECS}`, or the script gets them as one argument and shoots only the first.
 
 How the specs work:
 - A spec is `label=selector@offset`, where the offset is a % of the viewport height. For pinned sections, it's measured from the pin spacer.

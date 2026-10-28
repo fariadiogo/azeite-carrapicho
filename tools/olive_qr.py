@@ -11,10 +11,9 @@ Setup (Python 3.9+):
     # optional, for --check:
     pip install zxing-cpp
 
-Usage:
-    python olive_qr.py
-    python olive_qr.py --url HTTPS://OLEOCARAMELOTO.COM --out oleocarameloto_qr
-    python olive_qr.py --branch 11 --ink "#2F4A1E" --bg "#F7F2E3" --check
+Usage (--url and --out are required):
+    python olive_qr.py --url HTTPS://EXAMPLE.COM --out example_qr
+    python olive_qr.py --url HTTPS://EXAMPLE.COM --out example_qr --branch 11 --ink "#2F4A1E" --bg "#F7F2E3" --check
 
 Outputs <out>.svg (vector, for print) and <out>.png.
 
@@ -196,8 +195,8 @@ def check(png, url):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Olive-branch QR code generator")
-    ap.add_argument("--url", default="HTTPS://OLEOCARAMELOTO.COM")
-    ap.add_argument("--out", default="oleocarameloto_qr", help="output path without extension")
+    ap.add_argument("--url", required=True, help="address to encode, ideally in capitals")
+    ap.add_argument("--out", required=True, help="output path without extension")
     ap.add_argument("--branch", type=float, default=12.5, help="branch size in QR squares (default 12.5)")
     ap.add_argument("--gap", type=float, default=0.28, help="clear space around branch, in squares")
     ap.add_argument("--ink", default="#000000", help="dot / branch colour")

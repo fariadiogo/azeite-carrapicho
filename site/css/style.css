@@ -119,10 +119,10 @@ body::after {
 .fp--nav { width: 26px; height: 26px; opacity: .8; }
 .nav__links { display: flex; gap: clamp(14px, 2vw, 30px); }
 .nav__links a {
+  position: relative; padding: 6px 0;
   font-family: var(--sans); font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase;
   text-decoration: none; opacity: .78; transition: opacity .2s;
 }
-.nav__links a { position: relative; padding: 6px 0; }
 .nav__links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform .5s cubic-bezier(.2, .7, .2, 1); }
 .nav__links a:hover, .nav__links a.is-active { opacity: 1; }
 .nav__links a.is-active::after { transform: scaleX(1); }
@@ -137,7 +137,6 @@ body::after {
   .fp--nav { display: none; }
   .nav__actions { gap: 10px; }
   .nav .btn--small { padding: 9px 12px; font-size: .6rem; letter-spacing: .1em; }
-  .hero__title .eyebrow { font-size: .58rem; letter-spacing: .2em; max-width: 26em; line-height: 1.8; }
 }
 
 /* ---------- hero ---------- */
@@ -156,6 +155,9 @@ body::after {
   border-radius: 50%; opacity: 0;
   background: radial-gradient(circle closest-side, #fffef9 0%, #fff6d6 7%, rgba(255, 236, 190, .85) 8.4%, rgba(255, 224, 168, .5) 12.5%, rgba(255, 216, 160, .26) 23%, rgba(255, 212, 158, .14) 45%, rgba(255, 212, 158, 0) 100%);
 }
+/* The parallax layers and the branch keep will-change: they move on every frame of the hero, and this is the
+   state that was checked free of flicker in the user's pane. The sun and the photo, which grow far past the
+   screen, must not have it (see CLAUDE.md). */
 .layer { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; display: block; will-change: transform; overflow: visible; }
 .layer--sky > g, .dusk [data-dusk="sky"] > g { animation: drift 80s ease-in-out infinite alternate; }
 @keyframes drift { from { transform: translateX(-50px); } to { transform: translateX(60px); } }
@@ -189,10 +191,12 @@ body::after {
 .hero__sub::before, .hero__sub::after { content: ""; width: 40px; height: 1px; background: currentColor; opacity: .55; margin: 0 18px; }
 /* Playfair runs wide: on phones the name and the tagline each have to stay on one line */
 @media (max-width: 520px) {
+  .hero__title .eyebrow { font-size: .58rem; letter-spacing: .2em; max-width: 26em; line-height: 1.8; }
   .hero__title h1 { font-size: 18vw; }
   .hero__sub { letter-spacing: .26em; white-space: nowrap; }
   .hero__sub::before, .hero__sub::after { width: 20px; margin: 0 10px; }
 }
+/* after the phone rule, so it wins there too */
 .hero__sub::before { margin-left: 0; }
 .hero__cue {
   position: absolute; left: 50%; bottom: 3.5vh; transform: translateX(-50%); z-index: 4;
@@ -260,7 +264,7 @@ body::after {
 
 .stones { background: var(--cream); }
 .stones__viewport { position: relative; height: 100vh; height: 100svh; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding-top: 17vh; }
-.stones__eyebrow { margin-bottom: 2em; }
+.stones__eyebrow { justify-content: center; margin-bottom: 2em; }
 .stones__quote {
   margin: 0; padding: 0 16px; max-width: 15em; text-align: center;
   font-size: clamp(2.1rem, 4.8vw, 4.6rem); font-style: italic; font-weight: 400; line-height: 1.1; letter-spacing: -0.015em;
@@ -294,7 +298,7 @@ body::after {
 .legacy__intro { position: relative; display: grid; grid-template-columns: .85fr 1.15fr; gap: 6vw; align-items: center; }
 .legacy__archive .plx { aspect-ratio: 3 / 4; overflow: hidden; box-shadow: 0 30px 70px -30px rgba(40, 30, 15, .5); }
 .plx img { width: 100%; height: 118%; object-fit: cover; margin-top: -9%; }
-.legacy__archive figcaption, .hands figcaption small { font-family: var(--hand); font-size: 1.5rem; margin-top: 12px; color: var(--ink-soft); }
+.legacy__archive figcaption { font-family: var(--hand); font-size: 1.5rem; margin-top: 12px; color: var(--ink-soft); }
 .legacy__text { max-width: 560px; }
 .legacy__text em { font-style: italic; color: var(--olive); }
 
@@ -314,11 +318,10 @@ body::after {
 .hands { position: relative; height: 100vh; height: 100svh; margin: 0 calc(var(--gutter) * -1); overflow: hidden; }
 .hands img { width: 100%; height: 100%; object-fit: cover; }
 .hands::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 45%; background: linear-gradient(180deg, rgba(38, 45, 29, 0), var(--olive-deep)); pointer-events: none; }
-.hands figcaption { z-index: 1; }
 .hands figcaption {
-  position: absolute; inset: auto 0 12vh; text-align: center; color: var(--cream);
+  position: absolute; inset: auto 0 12vh; z-index: 1; text-align: center; color: var(--cream);
   font-size: clamp(3rem, 9vw, 8.5rem); font-style: italic; font-weight: 400; line-height: 1; letter-spacing: -0.03em;
- text-shadow: 0 2px 30px rgba(0, 0, 0, .25);
+  text-shadow: 0 2px 30px rgba(0, 0, 0, .25);
 }
 .hands figcaption small { display: block; margin-top: 18px; font-family: var(--sans); font-style: normal; font-size: .72rem; font-weight: 600; letter-spacing: .4em; text-transform: uppercase; color: var(--cream); }
 
@@ -417,7 +420,7 @@ body::after {
 
 .oils { background: linear-gradient(180deg, #e3e9de 0, var(--cream) 34vh); padding-top: 18vh; }
 .oils__head { text-align: center; padding: 0 16px; }
-.oils__head .eyebrow, .stones__eyebrow { justify-content: center; }
+.oils__head .eyebrow { justify-content: center; }
 .oils__pair { display: grid; grid-template-columns: 1fr 1fr; margin-top: 8vh; }
 .oil { display: flex; flex-direction: column; align-items: center; padding: 6vh 5vw 12vh; }
 .oil--verde { background: var(--verde); }

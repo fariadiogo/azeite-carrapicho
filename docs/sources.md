@@ -6,7 +6,7 @@ Instagram post links take the form `https://www.instagram.com/p/<code>/`.
 
 ## Where the material comes from
 
-- **Instagram, [@azeitecarrapicho_](https://www.instagram.com/azeitecarrapicho_/).** This is the main source. It has 32 posts, from October 2025 to October 2026, all downloaded on 2026-10-27 into `assets/ig/`. Most photos are by [@mario_ssa](https://www.instagram.com/mario_ssa/), as their captions credit with "📸 @mario_ssa". The profile:
+- **Instagram, [@azeitecarrapicho_](https://www.instagram.com/azeitecarrapicho_/).** This is the main source. It has 32 posts, from October 2025 to October 2026, all downloaded on 2026-10-27 into `source/instagram/`. Most photos are by [@mario_ssa](https://www.instagram.com/mario_ssa/), as their captions credit with "📸 @mario_ssa". The profile:
   - bio: "Azeite Virgem Extra, produzido no Parque Natural da Serra D'Aire e Candeeiros · 📍Serra de Santo António - Portugal";
   - story highlights: "Quem somos?", "Campanha 26", "Olival", "Eventos", "Carrapicho", "SSA", "Campanha 2025".
 - **Linktree, [linktr.ee/azeitecarrapicho](https://linktr.ee/azeitecarrapicho).** It has:
@@ -26,7 +26,7 @@ Instagram post links take the form `https://www.instagram.com/p/<code>/`.
 
 ## Images
 
-Every photo in `assets/img/` is a copy of an Instagram image (the matching file in `assets/ig/` is `<code>_<n>.jpg`). These are placeholders until the originals arrive from @mario_ssa.
+Every photo in `site/assets/img/` is a copy of an Instagram image (the matching file in `source/instagram/` is `<code>_<n>.jpg`). These are placeholders until the originals arrive from @mario_ssa.
 
 | File | Where it's used | Post | Date | Notes |
 | --- | --- | --- | --- | --- |
@@ -49,7 +49,7 @@ Every photo in `assets/img/` is a copy of an Instagram image (the matching file 
 | `bottle-maduro.jpg` | Azeites, Galega Madura | DUf87NrirJJ #0 | 2026-02-08 | |
 | `formats.jpg` | Azeites, the sizes | DbtNehcu0pG #0 | 2026-08-06 | |
 
-**Copied but not used:**
+**Copied but not used.** These copies were deleted from the project on 2026-10-28. The originals are still in `source/instagram/` under the post codes below, and the copies are in the first git commit:
 - `aerial-samoucal.jpg` (Decs7J4jiO9 #0): its panel was cut.
 - `bottles-olives.jpg` (De6kym5O-8_ #0).
 - `harvest-hands.jpg`, `harvest-tractor.jpg` and `harvest-net-2.jpg` (DeulXX1jtlg #0, #2, #3).
@@ -58,7 +58,7 @@ Every photo in `assets/img/` is a copy of an Instagram image (the matching file 
 - `stone-wall-bw.jpg` (DUfrPJnilmb #0).
 - `label-closeup.jpg` (DbJTBxHDmMs #0): the sharpest shot of their logo, useful as a reference.
 
-The documentary thumbnail is loaded from YouTube (`i.ytimg.com/vi/2U4gZFDnmQ8/hqdefault.jpg`). The illustrations (both landscapes, the daisies, the stone wall) and the fingerprint are drawn in code by `js/scenery.js`. They're ours.
+The documentary thumbnail is loaded from YouTube (`i.ytimg.com/vi/2U4gZFDnmQ8/hqdefault.jpg`). The illustrations (both landscapes, the daisies, the stone wall) and the fingerprint are drawn in code by `site/js/scenery.js`. They're ours.
 
 ## Copy
 

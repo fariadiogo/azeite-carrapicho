@@ -2,7 +2,7 @@
 
 A one-page, scroll-driven (parallax) landing page for **Azeite Carrapicho**, a family extra-virgin olive oil from Serra de Santo António (Alcanena, Portugal), in the Parque Natural das Serras de Aire e Candeeiros (PNSAC).
 
-**Status (2026-10-28):** this is the first concept. The page is static and works. Its photos are copies taken from the brand's Instagram, and the logo on it is a stand-in. Nothing has been published yet.
+**Status (2026-10-28):** this is the first concept. The page is static and works. Its photos are copies taken from the brand's Instagram, and the logo on it is a stand-in. Nothing has been published yet. The folder has been under git since 2026-10-28; the first commit is the concept as it stood before the tidy-up.
 
 ## Who owns what
 
@@ -41,15 +41,17 @@ Every image and every line of copy is traced to its source in [docs/sources.md](
 
 ## Run it
 
-Serve the folder with a static server:
+Serve the `site/` folder with a static server:
 
 ```bash
-python3 -m http.server 4173 --bind 127.0.0.1
+python3 -m http.server 4173 --bind 127.0.0.1 --directory site
 ```
 
 Then open http://localhost:4173. In the Claude desktop app, `preview_start` with `"carrapicho"` (from `.claude/launch.json`) does the same.
 
-There is no build step. The libraries load from cdnjs: GSAP 3.12.5 with ScrollTrigger, and Lenis 1.1.13 for smooth scrolling. The fonts come from Google Fonts:
+**Only `site/` gets published.** Everything else (the docs, the tools, the Instagram download, this file) stays off the hosting.
+
+There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Lenis 1.1.13 (smooth scrolling) from unpkg. The fonts come from Google Fonts:
 - Playfair Display: all the serif text.
 - Montserrat: small uppercase labels.
 - Caveat: handwritten notes.
@@ -59,15 +61,15 @@ There is no build step. The libraries load from cdnjs: GSAP 3.12.5 with ScrollTr
 
 | Path | What it is |
 | --- | --- |
-| `index.html` | Every section, in page order (outline below). |
-| `css/style.css` | One stylesheet, in page order. Colour tokens are on `:root`. The landscape-phone block and the `.no-motion` fallback are at the end. |
-| `js/main.js` | All the motion (GSAP, ScrollTrigger, Lenis). The `PHONE` and `WIDE` media strings are at the top. Under reduced motion it adds `.no-motion` and stops before any animation. |
-| `js/scenery.js` | Procedural SVG with a seeded random generator: the hero's dawn landscape and the closing dusk, both in parallax layers, plus the daisies, the dry-stone wall for section 02 (`buildWall`) and the stand-in fingerprint. |
-| `assets/img/` | The photos the page uses. They are copies of Instagram images; each one's source post is in docs/sources.md. |
-| `assets/ig/` | The raw download of their Instagram (2026-10-27): `CODE_N.jpg`, plus `index.json` (post code, date, the first 90 characters of the caption, image sizes) and `media_urls.json` (CDN links that have since expired). |
+| `site/index.html` | Every section, in page order (outline below). |
+| `site/css/style.css` | One stylesheet, in page order. Colour tokens are on `:root`. The landscape-phone block and the `.no-motion` fallback are at the end. |
+| `site/js/main.js` | All the motion (GSAP, ScrollTrigger, Lenis). The `PHONE` and `WIDE` media strings are at the top. Under reduced motion it adds `.no-motion` and stops before any animation. |
+| `site/js/scenery.js` | Procedural SVG with a seeded random generator: the hero's dawn landscape and the closing dusk, both in parallax layers, plus the daisies, the dry-stone wall for section 02 (`buildWall`) and the stand-in fingerprint. |
+| `site/assets/img/` | Only the photos the page uses. They are copies of Instagram images; each one's source post is in docs/sources.md. |
+| `source/instagram/` | The raw download of their Instagram (2026-10-27): `CODE_N.jpg`, plus `index.json` (post code, date, the first 90 characters of the caption, image sizes) and `media_urls.json` (CDN links that have since expired). |
 | `docs/sources.md` | Where every image and line of copy comes from, and the copy we wrote ourselves. |
 | `tools/` | Screenshot and check scripts. Use them through the `check-layout` skill. |
-| `olive_qr.py`, `oleocarameloto_qr_v2.png` | An olive-branch QR code generator. It predates the page and the page doesn't use it. |
+| `tools/olive_qr.py` | An olive-branch QR code generator. It predates the page and the page doesn't use it; it's kept to make a QR code of the site's URL once it's live. Setup and usage are in its docstring. `--url` and `--out` are required. It writes the SVG and PNG where you run it, so not inside `site/` unless they're meant to be published. |
 
 ## Page outline
 
@@ -96,7 +98,7 @@ There is no build step. The libraries load from cdnjs: GSAP 3.12.5 with ScrollTr
   - There's no stone wall in the foreground.
   - The only flowers are tall daisies. **No fennel or weeds**: the user dislikes them.
 - **Cut on purpose:**
-  - the Samoucal panel (`aerial-samoucal.jpg` is unused);
+  - the Samoucal panel (its photo is `source/instagram/Decs7J4jiO9_0.jpg`);
   - the underground section;
   - the fact strip;
   - the English version.
@@ -110,7 +112,7 @@ There is no build step. The libraries load from cdnjs: GSAP 3.12.5 with ScrollTr
 ## Things that bite
 
 - **The hero must stay light on GPU layers.** The "Carrapicho" letters and the top bar once flickered in the user's preview pane (Chromium 152). What fixed it:
-  - no `will-change` on large layers;
+  - no `will-change` on the elements that grow far past the screen: the sun and the photo. The screen-sized parallax `.layer`s, the branch and O Ano's `.year__track` do keep `will-change: transform`. That is the state that was checked free of flicker in the pane, so test there before removing it from them;
   - the sun scaled to 2.6× at most;
   - the photo hidden (`autoAlpha`) until it starts to open;
   - the letters (`.ch`) using `force3D` only during the intro and then `clearProps`.
@@ -129,7 +131,7 @@ There is no build step. The libraries load from cdnjs: GSAP 3.12.5 with ScrollTr
 ## Waiting on the client
 
 - **The logo file**, to replace the `.wordmark` text and the code-drawn `.fp` fingerprint in the nav and footer. It could replace the hero name too.
-- **Original photos from @mario_ssa**, to replace `assets/img/`. The family photos still have Instagram text printed on them, and that text now lives in the page.
+- **Original photos from @mario_ssa**, to replace `site/assets/img/`. The family photos still have Instagram text printed on them, and that text now lives in the page.
 - **Confirmations needed:**
   - **The polyphenol unit:** their post only says "superior a 360", and the "mg/kg" is ours.
   - **The archive photo:** who is in the black-and-white harvest photo.

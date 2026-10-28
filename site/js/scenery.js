@@ -1,6 +1,6 @@
 /* Procedural SVG for the serra: ridgelines, olive trees, dry-stone walls and
-   the fingerprint mark. Every generator takes a
-   seed, so the landscape is drawn the same way on every load. */
+   the fingerprint mark. Every generator takes a seed, so the landscape is
+   drawn the same way on every load. */
 (function () {
   const rng = (seed) => () => {
     seed = (seed + 0x6d2b79f5) | 0;
@@ -147,19 +147,6 @@
     return out;
   }
 
-  // Trees scattered along a ridgeline, smallest at the back.
-  function grove(r, pts, { w, count, size, c, detail, drop = [0, 0], skip }) {
-    const trees = [];
-    for (let i = 0; i < count; i++) {
-      const x = between(r, -40, w + 40);
-      if (skip && skip(x)) continue;
-      const gy = yAt(pts, x) + between(r, drop[0], drop[1]);
-      trees.push([x, gy, between(r, size[0], size[1])]);
-    }
-    trees.sort((a, b) => a[1] - b[1]);
-    return trees.map(([x, gy, s]) => oliveTree(r, x, gy, s, c, detail)).join('');
-  }
-
   // One limestone block: an angular polygon with chipped (slightly rounded) corners.
   function stonePath(r, x, y, w, h) {
     const n = 5 + Math.floor(r() * 3);
@@ -211,7 +198,7 @@
           const cx0 = x + sw * between(r, 0.3, 0.7);
           svg += `<path d="M${f(cx0)},${f(sy + sh * 0.12)}l${f(between(r, -6, 6))},${f(sh * 0.3)}l${f(between(r, -5, 5))},${f(sh * 0.32)}" stroke="${shadow}" stroke-width="1.2" fill="none" opacity=".55"/>`;
         }
-        stones.push({ svg, row, cx: x + sw / 2, cy: sy + sh / 2 });
+        stones.push({ svg, row });
         x += sw + between(r, 2, 6);
       }
       y -= rh + between(r, 1, 4);
@@ -220,7 +207,7 @@
     const defs = `<defs><linearGradient id="${id}" x1="0" y1="0" x2=".25" y2="1">` +
       `<stop offset="0" stop-color="#fff" stop-opacity=".32"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/>` +
       `<stop offset=".7" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient></defs>`;
-    return { stones, defs, svg: defs + stones.map((s) => s.svg).join(''), rows: row };
+    return { stones, defs, rows: row };
   }
 
   /* ---------- the hero / closing landscape, as separate parallax layers ---------- */
@@ -422,7 +409,7 @@
       sky: sky(r, p, W),
       far: defs + `<path d="${ridgePath(far, W, H)}" fill="${p.far}"/>` + mist(470, 0.9),
       mid: `<path d="${ridgePath(mid, W, H)}" fill="${p.mid}"/>` +
-        fields(r, mid, { w: W, rows: 4, top: 6, spacing: 7, c: { ...p.fields, wall: p.fields.wall }, trees: { size: 5, c: p.treesFar, sun: p.sun } }) +
+        fields(r, mid, { w: W, rows: 4, top: 6, spacing: 7, c: p.fields, trees: { size: 5, c: p.treesFar, sun: p.sun } }) +
         mist(560, 0.75),
       plateau: `<path d="${ridgePath(plat, W, H)}" fill="${p.plateau}"/>` +
         fields(r, plat, { w: W, rows: 6, top: 4, spacing: 11, c: p.fields, trees: { size: 11, c: p.treesMid, sun: p.sun } }) +
@@ -450,7 +437,7 @@
       .filter((s) => s.row < rows)
       .map((s) => `<g class="stone" data-row="${s.row}">${s.svg}</g>`)
       .join('');
-    return { svg, rows };
+    return { svg };
   }
 
   /* ---------- the fingerprint, as in the label ---------- */
