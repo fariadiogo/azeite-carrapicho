@@ -38,7 +38,7 @@ How the specs work:
 - Handy targets: `.hero`, `.territory`, `.pasture`, `.stones`, `.maze`, `.legacy`, `.ledger`, `.hands`, `.family`, `.year`, `.oils`, `.order`, `.dusk`, `.foot`.
 - For pinned sections, shoot several offsets: the hero at 0/60/150, the wall at 40/160, O Ano on desktop at 20/250/500.
 
-The script prints `errors: none` when the page threw nothing. The favicon 404 is known and is filtered out.
+The script prints `errors: none` when the page threw nothing. A 404 there usually means a photo was renamed or removed without updating `index.html`.
 
 To look at many shots at once, make a contact sheet:
 

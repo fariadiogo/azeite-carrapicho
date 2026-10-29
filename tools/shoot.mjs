@@ -44,7 +44,5 @@ for (const spec of specs) {
   await page.screenshot({ path: `${prefix}-${label}.jpg`, type: 'jpeg', quality: 72 });
   console.log(label, y);
 }
-// the favicon 404 is known and harmless
-const real = errors.filter((e) => !/404/.test(e));
-console.log('errors:', real.length ? real.join(' | ') : 'none');
+console.log('errors:', errors.length ? errors.join(' | ') : 'none');
 await browser.close();

@@ -65,10 +65,12 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
 | `site/css/style.css` | One stylesheet, in page order. Colour tokens are on `:root`. The landscape-phone block and the `.no-motion` fallback are at the end. |
 | `site/js/main.js` | All the motion (GSAP, ScrollTrigger, Lenis). The `PHONE` and `WIDE` media strings are at the top. Under reduced motion it adds `.no-motion` and stops before any animation. |
 | `site/js/scenery.js` | Procedural SVG with a seeded random generator: the hero's dawn landscape and the closing dusk, both in parallax layers, plus the daisies, the dry-stone wall for section 02 (`buildWall`) and the stand-in fingerprint. |
-| `site/assets/img/` | Only the photos the page uses. They are copies of Instagram images; each one's source post is in docs/sources.md. |
+| `site/assets/img/` | Only the photos the page uses. They are copies of Instagram images; each one's source post is in docs/sources.md. They are WebP, sized to how big they're drawn (by `tools/photos.py`), plus `share.jpg`, the 1200×630 link-preview image. |
+| `site/favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | A temporary icon of ours (an olive and a leaf), until the logo arrives. |
 | `source/instagram/` | The raw download of their Instagram (2026-10-27): `CODE_N.jpg`, plus `index.json` (post code, date, the first 90 characters of the caption, image sizes) and `media_urls.json` (CDN links that have since expired). |
 | `docs/sources.md` | Where every image and line of copy comes from, and the copy we wrote ourselves. |
 | `tools/` | Screenshot and check scripts. Use them through the `check-layout` skill. |
+| `tools/photos.py` | Resizes photos and re-encodes them as WebP for `site/assets/img/`. Its caps are the measured size each photo is drawn at; run new photos (the @mario_ssa originals) through it. Needs Pillow. |
 | `tools/olive_qr.py` | An olive-branch QR code generator. It predates the page and the page doesn't use it; it's kept to make a QR code of the site's URL once it's live. Setup and usage are in its docstring. `--url` and `--out` are required. It writes the SVG and PNG where you run it, so not inside `site/` unless they're meant to be published. |
 
 ## Page outline
@@ -127,17 +129,17 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
   In JS, `PHONE` and `WIDE` mirror these for the wall. O Ano switches at 900px.
 - **Where media-query overrides go:** put them after the base rule they override (same specificity, so the later rule wins). One fix already failed because its override sat above the base rule.
 - **`.year__seasons` is `display: contents` on wide screens**, so the months still ride in the scroll track. On phones it is the swipe row.
+- **The link-preview image (`og:image`) is a relative URL** because the page has no address yet. Most apps (WhatsApp, Facebook) need it absolute, so set the full URL when the page goes online, and check the preview by sending yourself the link.
 
 ## Waiting on the client
 
-- **The logo file**, to replace the `.wordmark` text and the code-drawn `.fp` fingerprint in the nav and footer. It could replace the hero name too.
-- **Original photos from @mario_ssa**, to replace `site/assets/img/`. The family photos still have Instagram text printed on them, and that text now lives in the page.
+- **The logo file**, to replace the `.wordmark` text and the code-drawn `.fp` fingerprint in the nav and footer, and the temporary olive favicon. It could replace the hero name too.
+- **Original photos from @mario_ssa**, to replace `site/assets/img/` (through `tools/photos.py`). The family photos still have Instagram text printed on them, and that text now lives in the page.
 - **Confirmations needed:**
   - **The polyphenol unit:** their post only says "superior a 360", and the "mg/kg" is ours.
   - **The archive photo:** who is in the black-and-white harvest photo.
   - **Our own copy:** the lines listed under "Written by us" in docs/sources.md.
   - **Ages:** the ages in the family captions will go out of date.
-- **There is no favicon yet** (it currently returns a 404).
 
 ## Checking your work
 

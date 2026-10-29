@@ -28,26 +28,29 @@ Instagram post links take the form `https://www.instagram.com/p/<code>/`.
 
 Every photo in `site/assets/img/` is a copy of an Instagram image (the matching file in `source/instagram/` is `<code>_<n>.jpg`). These are placeholders until the originals arrive from @mario_ssa.
 
+Since 2026-10-29 the photos are WebP, resized to the size they're drawn at and re-encoded by `tools/photos.py`. The JPEG copies they were made from are in git history (commit 6a4841b).
+
 | File | Where it's used | Post | Date | Notes |
 | --- | --- | --- | --- | --- |
-| `aerial-ridge.jpg` | Hero photo reveal; Território background | Decs7J4jiO9 #2 | 2026-10-13 | The "Samoucal" post |
-| `aerial-terraces.jpg` | Stone-maze photo, after 02 | Decs7J4jiO9 #1 | 2026-10-13 | |
-| `cows-wall.jpg` | Pasture, first photo | DbWWSMiDg3T #4 | 2026-07-28 | |
-| `tree-wall-evening.jpg` | Pasture, second photo | Daqu31rjmCr #0 | 2026-07-11 | |
-| `leaves-evening.jpg` | Pasture, third photo | Daqu31rjmCr #3 | 2026-07-11 | |
-| `archive-harvest.jpg` | Legado, archive photo | DbJTBxHDmMs #1 | 2026-07-23 | Who is in it is unconfirmed |
-| `ledger-1987.jpg`, `ledger-b.jpg`, `ledger-c.jpg` | Legado, the 1987 ledger pages | DdcGF4UjuwA #0, #1, #2 | 2026-09-18 | |
-| `legacy-hands.jpg` | "Ficou o legado." full-bleed photo | DQAIUyrivw0 #0 | 2025-10-19 | Cropped to remove the headline printed on it |
-| `family-fernanda.jpg`, `family-abel.jpg`, `family-julia.jpg`, `family-carolina.jpg` | Família | DeATM-eDuiT #1, #2, #3, #4 | 2026-10-02 | Instagram text is printed on these; the text is now also in the page |
-| `year-buds.jpg` | O Ano, Abril | DXjfe-PCnba #2 | 2026-04-25 | |
-| `year-flower.jpg` | O Ano, Maio | DX-DiS5jj4l #0 | 2026-05-05 | |
-| `year-fruit.jpg` | O Ano, Julho | Db_vh3jjpyA #0 | 2026-08-13 | |
-| `harvest-net.jpg` | O Ano, Setembro | DeulXX1jtlg #1 | 2026-10-20 | |
-| `year-mill.jpg` | O Ano, Outubro | Da2gmflDq_G #0 | 2026-07-16 | |
-| `cow-grazing.jpg` | O Ano, Inverno | DbWWSMiDg3T #5 | 2026-07-28 | |
-| `bottle-verde.jpg` | Azeites, Galega Verde | DUY3-ApDrCu #0 | 2026-02-05 | |
-| `bottle-maduro.jpg` | Azeites, Galega Madura | DUf87NrirJJ #0 | 2026-02-08 | |
-| `formats.jpg` | Azeites, the sizes | DbtNehcu0pG #0 | 2026-08-06 | |
+| `aerial-ridge.webp` | Hero photo reveal; Território background | Decs7J4jiO9 #2 | 2026-10-13 | The "Samoucal" post |
+| `aerial-terraces.webp` | Stone-maze photo, after 02 | Decs7J4jiO9 #1 | 2026-10-13 | |
+| `cows-wall.webp` | Pasture, first photo | DbWWSMiDg3T #4 | 2026-07-28 | |
+| `tree-wall-evening.webp` | Pasture, second photo | Daqu31rjmCr #0 | 2026-07-11 | |
+| `leaves-evening.webp` | Pasture, third photo | Daqu31rjmCr #3 | 2026-07-11 | |
+| `archive-harvest.webp` | Legado, archive photo | DbJTBxHDmMs #1 | 2026-07-23 | Who is in it is unconfirmed |
+| `ledger-1987.webp`, `ledger-b.webp`, `ledger-c.webp` | Legado, the 1987 ledger pages | DdcGF4UjuwA #0, #1, #2 | 2026-09-18 | |
+| `legacy-hands.webp` | "Ficou o legado." full-bleed photo | DQAIUyrivw0 #0 | 2025-10-19 | Cropped to remove the headline printed on it |
+| `family-fernanda.webp`, `family-abel.webp`, `family-julia.webp`, `family-carolina.webp` | Família | DeATM-eDuiT #1, #2, #3, #4 | 2026-10-02 | Instagram text is printed on these; the text is now also in the page |
+| `year-buds.webp` | O Ano, Abril | DXjfe-PCnba #2 | 2026-04-25 | |
+| `year-flower.webp` | O Ano, Maio | DX-DiS5jj4l #0 | 2026-05-05 | |
+| `year-fruit.webp` | O Ano, Julho | Db_vh3jjpyA #0 | 2026-08-13 | |
+| `harvest-net.webp` | O Ano, Setembro | DeulXX1jtlg #1 | 2026-10-20 | |
+| `year-mill.webp` | O Ano, Outubro | Da2gmflDq_G #0 | 2026-07-16 | |
+| `cow-grazing.webp` | O Ano, Inverno | DbWWSMiDg3T #5 | 2026-07-28 | |
+| `bottle-verde.webp` | Azeites, Galega Verde | DUY3-ApDrCu #0 | 2026-02-05 | |
+| `bottle-maduro.webp` | Azeites, Galega Madura | DUf87NrirJJ #0 | 2026-02-08 | |
+| `formats.webp` | Azeites, the sizes | DbtNehcu0pG #0 | 2026-08-06 | |
+| `share.jpg` | Link preview (`og:image`), 1200×630 | Decs7J4jiO9 #2 | 2026-10-13 | Cropped from the full-size original; the same photo as `aerial-ridge` |
 
 **Copied but not used.** These copies were deleted from the project on 2026-10-28. The originals are still in `source/instagram/` under the post codes below, and the copies are in the first git commit:
 - `aerial-samoucal.jpg` (Decs7J4jiO9 #0): its panel was cut.
@@ -69,6 +72,8 @@ How to read the "Kind" column:
 
 | Section | Text on the page | Source | Kind |
 | --- | --- | --- | --- |
+| Page head | Title and link-preview title: "Azeite Carrapicho · Séculos de sabor" | Their tagline | Adapted |
+| Page head | Description and link-preview text: "Azeite virgem extra de azeitona Galega, produzido na Serra de Santo António, no coração do Parque Natural das Serras de Aire e Candeeiros." | Instagram bio, Linktree and the product posts | Adapted |
 | Hero | "Azeite Virgem Extra · Serra de Santo António" | Instagram bio and Linktree | Adapted |
 | Hero | "Carrapicho", "Séculos de sabor" | Their tagline (DQAIUyrivw0 and others) | Theirs |
 | 01 | "Um tesouro escondido, numa paisagem cársica." | DQAHGVwDJN7 | Theirs |
@@ -118,7 +123,7 @@ How to read the "Kind" column:
 - **Parts of other lines:** "Da rede para a caixa, da caixa para o lagar." (Outubro); "planalto de calcário" (01); the "mg/kg" unit.
 - **Month names** on the O Ano cards. Each comes from when its post went up, or from what the post says: Setembro is the harvest month, per Db_vh3jjpyA.
 - **Footer labels:** "Onde", "Fale connosco", "Fotografia" and the "© 2026" line.
-- **All image alt texts.**
+- **All image alt texts.** The link preview reuses the Território one.
 
 ## Designed by us (no source of theirs)
 
@@ -126,4 +131,5 @@ How to read the "Kind" column:
 - The dry-stone wall that builds itself, and the quote lighting up word by word.
 - The outlined "1987".
 - The drawn arrows beside the family captions. They echo the hand-drawn arrows on their posts.
+- **The temporary favicon:** an olive and a leaf in the page's colours (`site/favicon.svg`, `favicon.ico`, `apple-touch-icon.png`). It goes when the logo arrives.
 - **The stand-ins for their logo:** the wordmark set in Cedarville Cursive and the fingerprint drawn in code. Neither is their logo, and both must be replaced by the real logo file.
