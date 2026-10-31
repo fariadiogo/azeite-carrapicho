@@ -2,7 +2,7 @@
 
 A one-page, scroll-driven (parallax) landing page for **Azeite Carrapicho**, a family extra-virgin olive oil from Serra de Santo António (Alcanena, Portugal), in the Parque Natural das Serras de Aire e Candeeiros (PNSAC).
 
-**Status (2026-10-28):** this is the first concept. The page is static and works. Its photos are copies taken from the brand's Instagram, and the logo on it is a stand-in. Nothing has been published yet. The folder has been under git since 2026-10-28; the first commit is the concept as it stood before the tidy-up.
+**Status (2026-10-28):** this is the first concept. The page is static and works. Its photos are copies taken from the brand's Instagram, and the logo on it is a stand-in. Since 2026-10-31 the repo (github.com/fariadiogo/azeite-carrapicho) is public and the page is live on GitHub Pages at https://fariadiogo.github.io/azeite-carrapicho/. The folder has been under git since 2026-10-28; the first commit is the concept as it stood before the tidy-up.
 
 ## Who owns what
 
@@ -49,7 +49,7 @@ python3 -m http.server 4173 --bind 127.0.0.1 --directory site
 
 Then open http://localhost:4173. In the Claude desktop app, `preview_start` with `"carrapicho"` (from `.claude/launch.json`) does the same.
 
-**Only `site/` gets published.** Everything else (the docs, the tools, the Instagram download, this file) stays off the hosting.
+**Only `site/` gets published.** Everything else (the docs, the tools, the Instagram download, this file) stays off the hosting. Every push to `main` deploys `site/` to GitHub Pages through `.github/workflows/pages.yml`. The repo itself is public, so anything committed (history included) can be read by anyone.
 
 There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Lenis 1.1.13 (smooth scrolling) from unpkg. The fonts come from Google Fonts:
 - Playfair Display: all the serif text.
@@ -66,6 +66,7 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
 | `site/js/main.js` | All the motion (GSAP, ScrollTrigger, Lenis). The `PHONE` and `WIDE` media strings are at the top. Under reduced motion it adds `.no-motion` and stops before any animation. |
 | `site/js/scenery.js` | Procedural SVG with a seeded random generator: the hero's dawn landscape and the closing dusk, both in parallax layers, plus the daisies, the dry-stone wall for section 02 (`buildWall`) and the stand-in fingerprint. |
 | `site/assets/img/` | Only the photos the page uses. They are copies of Instagram images; each one's source post is in docs/sources.md. They are WebP, sized to how big they're drawn (by `tools/photos.py`), plus `share.jpg`, the 1200×630 link-preview image. |
+| `.github/workflows/pages.yml` | Deploys `site/` to GitHub Pages on every push to `main`. |
 | `site/favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | A temporary icon of ours (an olive and a leaf), until the logo arrives. |
 | `source/instagram/` | The raw download of their Instagram (2026-10-27): `CODE_N.jpg`, plus `index.json` (post code, date, the first 90 characters of the caption, image sizes) and `media_urls.json` (CDN links that have since expired). |
 | `docs/sources.md` | Where every image and line of copy comes from, and the copy we wrote ourselves. |
@@ -129,7 +130,7 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
   In JS, `PHONE` and `WIDE` mirror these for the wall. O Ano switches at 900px.
 - **Where media-query overrides go:** put them after the base rule they override (same specificity, so the later rule wins). One fix already failed because its override sat above the base rule.
 - **`.year__seasons` is `display: contents` on wide screens**, so the months still ride in the scroll track. On phones it is the swipe row.
-- **The link-preview image (`og:image`) is a relative URL** because the page has no address yet. Most apps (WhatsApp, Facebook) need it absolute, so set the full URL when the page goes online, and check the preview by sending yourself the link.
+- **`og:url` and the link-preview image (`og:image`) are absolute URLs** on the GitHub Pages address, because most apps (WhatsApp, Facebook) need them absolute. If the page moves to its own domain, change both, and check the preview by sending yourself the link.
 
 ## Waiting on the client
 
