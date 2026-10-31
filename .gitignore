@@ -1,3 +1,5 @@
 .DS_Store
 # tools/node_modules can be a symlink, so no trailing slash
 node_modules
+# QR codes from tools/olive_qr.py, kept local
+qr/

@@ -12,6 +12,25 @@
   const between = (r, a, b) => a + r() * (b - a);
   const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
 
+  // Shapes are written in their final coordinates, never with a transform attribute, and fade with fill-opacity /
+  // stroke-opacity rather than opacity: Chrome paints every transformed or opacity-faded SVG element as a separate
+  // chunk, and with a few thousand leaves, re-sorting those chunks cost more than a frame on a phone.
+  const pairs = (d, fn) => d.replace(/(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/g, (_, x, y) => fn(+x, +y).map(f).join(','));
+  const shift = (d, dx, dy) => pairs(d, (x, y) => [x + dx, y + dy]);
+  // turned by `deg` about the shape's own origin, then moved to (x, y)
+  const place = (d, x, y, deg) => {
+    const a = (deg * Math.PI) / 180, cos = Math.cos(a), sin = Math.sin(a);
+    return pairs(d, (px, py) => [x + px * cos - py * sin, y + px * sin + py * cos]);
+  };
+  // an ellipse turned by `deg` about its centre, as two half arcs
+  function turnedEllipse(cx, cy, rx, ry, deg) {
+    [cx, cy, rx, ry, deg] = [cx, cy, rx, ry, deg].map(f);
+    const a = (deg * Math.PI) / 180, ux = rx * Math.cos(a), uy = rx * Math.sin(a);
+    const g = (n) => Math.round(n * 100) / 100;
+    const arc = (x, y) => `A${rx} ${ry} ${deg} 0 1 ${g(x)} ${g(y)}`;
+    return `M${g(cx + ux)} ${g(cy + uy)}${arc(cx - ux, cy - uy)}${arc(cx + ux, cy + uy)}Z`;
+  }
+
   // Catmull-Rom spline through the points, written as cubic Béziers.
   function smooth(pts, closed) {
     const n = pts.length;
@@ -55,7 +74,7 @@
   }
 
   const ellipse = (cx, cy, rx, ry, fill, op) =>
-    `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(rx)}" ry="${f(ry)}" fill="${fill}"${op ? ` opacity="${op}"` : ''}/>`;
+    `<ellipse cx="${f(cx)}" cy="${f(cy)}" rx="${f(rx)}" ry="${f(ry)}" fill="${fill}"${op ? ` fill-opacity="${op}"` : ''}/>`;
 
   // An old olive tree: a swollen base that splits into one to three twisted
   // stems, limbs reaching out to separate clumps of silvery foliage with sky
@@ -90,7 +109,7 @@
       if (detail > 1) {
         // a lit edge down the sun side of the bark
         const edge = (sun > 0 ? R.slice().reverse() : L).slice(1, 6);
-        out += `<path d="${smooth(edge)}" stroke="${c.bark}" stroke-width="${f(s * 0.008)}" stroke-linecap="round" fill="none" opacity=".7"/>`;
+        out += `<path d="${smooth(edge)}" stroke="${c.bark}" stroke-width="${f(s * 0.008)}" stroke-linecap="round" fill="none" stroke-opacity=".7"/>`;
       }
       tips.push([tipX, tipY]);
     }
@@ -141,7 +160,8 @@
         const lx = cx + Math.cos(a) * rx * rr, ly = cy + Math.sin(a) * ry * rr;
         const ll = s * between(r, 0.014, 0.026);
         const lit = Math.cos(a) * sun > 0.2 && r() < 0.7;
-        out += `<ellipse cx="${f(lx)}" cy="${f(ly)}" rx="${f(ll)}" ry="${f(ll * 0.3)}" transform="rotate(${f(between(r, -60, 60))} ${f(lx)} ${f(ly)})" fill="${lit ? c.light : r() < 0.5 ? c.leaf : c.shade}"/>`;
+        const turn = between(r, -60, 60);
+        out += `<path d="${turnedEllipse(lx, ly, ll, ll * 0.3, turn)}" fill="${lit ? c.light : r() < 0.5 ? c.leaf : c.shade}"/>`;
       }
     }
     return out;
@@ -187,16 +207,16 @@
         const sh = rh * between(r, 0.78, 1.02);
         const sy = y - sh - (rh - sh) * r();
         const d = stonePath(r, x, sy, sw, sh);
-        let svg = `<path d="${d}" fill="${shadow}" transform="translate(${f(sw * 0.02)},${f(sh * 0.09)})"/>` +
+        let svg = `<path d="${shift(d, f(sw * 0.02), f(sh * 0.09))}" fill="${shadow}"/>` +
           `<path d="${d}" fill="${pick(r, palette)}"/><path d="${d}" fill="url(#${id})"/>`;
         if (r() < 0.35) {
           for (let k = 0; k < 3 + Math.floor(r() * 5); k++) {
-            svg += `<circle cx="${f(x + sw * between(r, 0.2, 0.8))}" cy="${f(sy + sh * between(r, 0.2, 0.75))}" r="${f(between(r, 1.2, 3.4))}" fill="${pick(r, lichen)}" opacity=".55"/>`;
+            svg += `<circle cx="${f(x + sw * between(r, 0.2, 0.8))}" cy="${f(sy + sh * between(r, 0.2, 0.75))}" r="${f(between(r, 1.2, 3.4))}" fill="${pick(r, lichen)}" fill-opacity=".55"/>`;
           }
         }
         if (r() < 0.18) {
           const cx0 = x + sw * between(r, 0.3, 0.7);
-          svg += `<path d="M${f(cx0)},${f(sy + sh * 0.12)}l${f(between(r, -6, 6))},${f(sh * 0.3)}l${f(between(r, -5, 5))},${f(sh * 0.32)}" stroke="${shadow}" stroke-width="1.2" fill="none" opacity=".55"/>`;
+          svg += `<path d="M${f(cx0)},${f(sy + sh * 0.12)}l${f(between(r, -6, 6))},${f(sh * 0.3)}l${f(between(r, -5, 5))},${f(sh * 0.32)}" stroke="${shadow}" stroke-width="1.2" fill="none" stroke-opacity=".55"/>`;
         }
         stones.push({ svg, row });
         x += sw + between(r, 2, 6);
@@ -268,13 +288,13 @@
       while (x < w + 80) {
         const x1 = Math.min(w + 80, x + between(r, 80, 240) * (1 + i * 0.4));
         const t = r();
-        if (t < 0.55) plots += `<path d="${poly([...seg(a, x, x1), ...seg(b, x, x1).reverse()])}Z" fill="${t < 0.28 ? c.earth : c.green}" opacity="${f(between(r, 0.22, 0.5))}"/>`;
+        if (t < 0.55) plots += `<path d="${poly([...seg(a, x, x1), ...seg(b, x, x1).reverse()])}Z" fill="${t < 0.28 ? c.earth : c.green}" fill-opacity="${f(between(r, 0.22, 0.5))}"/>`;
         const lean = between(r, -14, 14) * (1 + i * 0.3);
         walls += `<path d="M${f(x1)},${f(yAt(a, x1))}L${f(x1 + lean)},${f(yAt(b, x1 + lean))}" stroke-width="${sw}"/>`;
         x = x1;
       }
       walls += `<path d="${smooth(a)}" stroke-width="${sw}"/>`;
-      shadows += `<path d="${smooth(a)}" stroke-width="${sw}" transform="translate(0,${f(1 + i * 0.6)})"/>`;
+      shadows += `<path d="${shift(smooth(a), 0, f(1 + i * 0.6))}" stroke-width="${sw}"/>`;
       if (trees) {
         const size = trees.size * (1 + i * 0.45);
         for (let tx = between(r, -40, 0); tx < w + 40; tx += between(r, 26, 48) * (1 + i * 0.35)) {
@@ -296,11 +316,11 @@
       const x = between(r, -40, w + 40), gy = yAt(pts, x) + between(r, drop[0], drop[1]);
       const ow = between(r, size[0], size[1]), oh = ow * between(r, 0.28, 0.45);
       const d = stonePath(r, x - ow / 2, gy - oh, ow, oh * 1.3);
-      out += `<path d="${d}" fill="${c.rockDark}" transform="translate(0,${f(oh * 0.12)})"/><path d="${d}" fill="${c.rock}"/>`;
-      out += `<path d="${stonePath(r, x - ow * 0.38, gy - oh * 1.02, ow * 0.7, oh * 0.55)}" fill="${c.rockLight}" opacity=".7"/>`;
+      out += `<path d="${shift(d, 0, f(oh * 0.12))}" fill="${c.rockDark}"/><path d="${d}" fill="${c.rock}"/>`;
+      out += `<path d="${stonePath(r, x - ow * 0.38, gy - oh * 1.02, ow * 0.7, oh * 0.55)}" fill="${c.rockLight}" fill-opacity=".7"/>`;
       for (let k = 0; k < 2 + Math.floor(r() * 3); k++) {
         const kx = x + between(r, -0.35, 0.35) * ow;
-        out += `<path d="M${f(kx)},${f(gy - oh * 0.75)}l${f(between(r, -3, 3))},${f(oh * 0.7)}" stroke="${c.rockDark}" stroke-width="1.4" opacity=".6"/>`;
+        out += `<path d="M${f(kx)},${f(gy - oh * 0.75)}l${f(between(r, -3, 3))},${f(oh * 0.7)}" stroke="${c.rockDark}" stroke-width="1.4" fill="none" stroke-opacity=".6"/>`;
       }
     }
     return out;
@@ -316,7 +336,7 @@
       stalks += `M${f(x)},${f(gy)}q${f(bend * 0.2)},${f(-hh * 0.6)} ${f(bend)},${f(-hh)}`;
       for (let k = 0; k < 8; k++) {
         const a = (k / 8) * Math.PI * 2, px = tx + Math.cos(a) * 5, py = ty + Math.sin(a) * 5;
-        heads += ellipse(px, py, 4.2, 2, c.daisy).replace('/>', ` transform="rotate(${f((a * 180) / Math.PI)} ${f(px)} ${f(py)})"/>`);
+        heads += `<path d="${turnedEllipse(px, py, 4.2, 2, (a * 180) / Math.PI)}" fill="${c.daisy}"/>`;
       }
       heads += ellipse(tx, ty, 3.2, 3.2, c.heart);
     }
@@ -344,9 +364,9 @@
     let out = `<path d="${smooth(L.concat(R), true)}" fill="${c.stem}"/>`;
     const leaf = (x, y, ang, len, under) => {
       const wd = len * 0.15;
-      return `<g transform="translate(${f(x)},${f(y)}) rotate(${f(ang)})">` +
-        `<path d="M0,0Q${f(len * 0.45)},${f(-wd)} ${f(len)},0Q${f(len * 0.45)},${f(wd)} 0,0Z" fill="${under ? c.under : c.leaf}"/>` +
-        (under ? '' : `<path d="M${f(len * 0.06)},0L${f(len * 0.85)},0" stroke="${c.rib}" stroke-width="1.1"/>`) + '</g>';
+      const at = (d) => place(d, f(x), f(y), f(ang));
+      return `<path d="${at(`M0,0Q${f(len * 0.45)},${f(-wd)} ${f(len)},0Q${f(len * 0.45)},${f(wd)} 0,0Z`)}" fill="${under ? c.under : c.leaf}"/>` +
+        (under ? '' : `<path d="${at(`M${f(len * 0.06)},0L${f(len * 0.85)},0`)}" stroke="${c.rib}" stroke-width="1.1"/>`);
     };
     let leaves = '', fruit = '';
     let side = 1;
@@ -390,7 +410,7 @@
     const plat = ridgeLine(r, { w: W, base: 668, amp: 20, step: 40 });
     const near = ridgeLine(r, { w: W, base: 735, amp: 30, step: 40 });
 
-    const mist = (y, o) => `<rect x="-80" y="${y}" width="${W + 160}" height="${H - y}" fill="url(#mist-${name})" opacity="${o}"/>`;
+    const mist = (y, o) => `<rect x="-80" y="${y}" width="${W + 160}" height="${H - y}" fill="url(#mist-${name})" fill-opacity="${o}"/>`;
     const defs = `<defs><linearGradient id="mist-${name}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${p.mist}" stop-opacity="0"/><stop offset=".35" stop-color="${p.mist}" stop-opacity=".55"/><stop offset="1" stop-color="${p.mist}" stop-opacity="0"/></linearGradient></defs>`;
     // the near ground runs well below the frame, so it still fills the bottom once the layer has risen
     const nearTop = Math.min(...near.map(([, y]) => y));

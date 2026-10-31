@@ -10,11 +10,9 @@
   /* ---------- draw the scenery ---------- */
 
   const dawn = Scenery.landscape('dawn', 11);
-  // sky and branch get a wrapper <g> so CSS can drift / sway it while GSAP moves the <svg>
-  const wrap = (key, svg) => (key === 'sky' || key === 'branch' ? `<g>${svg}</g>` : svg);
-  $$('[data-layer]').forEach((svg) => { svg.innerHTML = wrap(svg.dataset.layer, dawn[svg.dataset.layer]); });
+  $$('[data-layer]').forEach((svg) => { svg.innerHTML = dawn[svg.dataset.layer]; });
   const dusk = Scenery.landscape('dusk', 23);
-  $$('[data-dusk]').forEach((svg) => { svg.innerHTML = wrap(svg.dataset.dusk, dusk[svg.dataset.dusk]); });
+  $$('[data-dusk]').forEach((svg) => { svg.innerHTML = dusk[svg.dataset.dusk]; });
 
   // the title, letter by letter, for the opening reveal
   const h1 = $('.hero__title h1');
@@ -74,7 +72,9 @@
   /* ---------- smooth scroll ---------- */
 
   gsap.registerPlugin(ScrollTrigger);
-  if (window.Lenis) {
+  // Mouse and trackpad only. Lenis leaves touch scrolling native anyway, but its blocking touch listeners make the
+  // phone wait for the main thread before every scroll, and make Chrome track every SVG shape as a touch target.
+  if (window.Lenis && matchMedia('(hover: hover) and (pointer: fine)').matches) {
     lenis = new window.Lenis({ lerp: 0.085 });
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((t) => lenis.raf(t * 1000));

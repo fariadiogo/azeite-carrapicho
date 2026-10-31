@@ -73,6 +73,7 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
 | `tools/` | Screenshot and check scripts. Use them through the `check-layout` skill. |
 | `tools/photos.py` | Resizes photos and re-encodes them as WebP for `site/assets/img/`. Its caps are the measured size each photo is drawn at; run new photos (the @mario_ssa originals) through it. Needs Pillow. |
 | `tools/olive_qr.py` | An olive-branch QR code generator. It predates the page and the page doesn't use it; it's kept to make a QR code of the site's URL once it's live. Setup and usage are in its docstring. `--url` and `--out` are required. It writes the SVG and PNG where you run it, so not inside `site/` unless they're meant to be published. |
+| `qr/` | The QR code of the live page (`azeite-carrapicho-qr.svg` and `.png`), made with `tools/olive_qr.py`. It is git-ignored, so it stays on this machine. The URL is lowercase because the Pages path is case-sensitive. |
 
 ## Page outline
 
@@ -121,6 +122,11 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
   - the letters (`.ch`) using `force3D` only during the intro and then `clearProps`.
 
   Headless Chrome 156 never showed the flicker, so a clean test there proves nothing.
+- **The scenery has ~14,000 SVG shapes, so keep each one cheap.** On a phone the live page once spent nearly every frame rebuilding Chrome's layer list, scrolling at ~30 fps even when idle. Fixed on 2026-10-31; keep it fixed:
+  - generated shapes carry no `transform` or `opacity` attribute. Bake turns and offsets into the coordinates (`shift`, `place`, `turnedEllipse` in scenery.js) and fade with `fill-opacity` / `stroke-opacity`;
+  - the drawn SVGs (`.layer`, `.stones__wall`) have `pointer-events: none`, so Chrome keeps no touch target per shape;
+  - the never-ending animations (clouds `.drift`, branch `.sway`) sit on wrapper `<div>`s. On an `<svg>`, or inside one, Chrome can't run them on the GPU;
+  - Lenis runs only with a mouse or trackpad (`(hover: hover) and (pointer: fine)`). Its blocking touch listeners made phones wait for the main thread on every scroll.
 - **The user views the page in the Claude desktop app's built-in browser pane**, at about 345×811. Ask them to check visual and animation changes there.
 - **Breakpoints:**
   - ≤900px: tablets and phones in portrait. The nav links hide.
