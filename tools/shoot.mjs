@@ -3,7 +3,7 @@
 //   node tools/shoot.mjs <width> <height> <outPrefix> <spec>...
 //
 // Each spec is label=selector@offset or label=@absoluteY. The offset is in % of the viewport height from the top
-// of that element (or of its pin spacer, for pinned sections). Screens narrower than 768px are emulated as a phone
+// of that element (or of its pin spacer or sticky track, for sections that stay put). Screens narrower than 768px are emulated as a phone
 // (touch, mobile UA); MOBILE=1 forces that for wider ones, e.g. a phone on its side. The script scrolls there in
 // steps, so scrubbed timelines and once-only reveals play as they would for a reader.
 //
@@ -33,7 +33,8 @@ for (const spec of specs) {
   const y = await page.evaluate((sel, off) => {
     if (!sel) return +off;
     const el = document.querySelector(sel);
-    const top = (el.closest('.pin-spacer') || el).getBoundingClientRect().top + scrollY;
+    // a sticky section's own top moves with the scroll, so measure from its track
+    const top = (el.closest('.pin-spacer, .hero-track') || el).getBoundingClientRect().top + scrollY;
     return Math.round(top + (parseFloat(off || 0) * innerHeight) / 100);
   }, sel, off);
   await page.evaluate(async (y) => {

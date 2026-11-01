@@ -34,7 +34,7 @@ MOBILE=1 node tools/shoot.mjs 844 390 "$OUT/l" "hero=@0" "wall=.stones@160" "yea
 The shell is zsh, which doesn't split an unquoted variable into words. If you keep the specs in a variable, pass it as `${=SPECS}`, or the script gets them as one argument and shoots only the first.
 
 How the specs work:
-- A spec is `label=selector@offset`, where the offset is a % of the viewport height. For pinned sections, it's measured from the pin spacer.
+- A spec is `label=selector@offset`, where the offset is a % of the viewport height. For sections that stay put, it's measured from the start of their scroll: the `.hero-track` for the hero, `.stones` itself for the wall (both sticky), and the pin spacer for O Ano on desktop.
 - Handy targets: `.hero`, `.territory`, `.pasture`, `.stones`, `.maze`, `.legacy`, `.ledger`, `.hands`, `.family`, `.year`, `.oils`, `.order`, `.dusk`, `.foot`.
 - For pinned sections, shoot several offsets: the hero at 0/60/150, the wall at 40/160, O Ano on desktop at 20/250/500.
 

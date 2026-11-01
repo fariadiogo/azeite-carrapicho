@@ -19,7 +19,7 @@
   h1.innerHTML = [...h1.textContent].map((ch) => `<span class="ch" aria-hidden="true">${ch}</span>`).join('');
 
   const wall = Scenery.buildWall(31, 1600, 560);
-  $('.stones__wall').innerHTML = wall.svg;
+  $('.stones__wall').innerHTML = wall.html;
 
   const print = Scenery.fingerprint(3).map((d) => `<path d="${d}"/>`).join('');
   $$('svg.fp').forEach((svg) => { svg.innerHTML = print; });
@@ -104,10 +104,12 @@
   // The sun rises from behind the serra over the first half, flares, and the
   // real serra opens out of it: a circle of light onto the aerial photo, which
   // is the same image, at the same scale, that the next section starts on.
+  // The hero is sticky in its track (see the CSS), so the timeline runs over exactly the stretch it stays put.
   const hero = $('#hero');
+  const heroTrack = hero.parentElement;
   gsap.timeline({
     scrollTrigger: {
-      trigger: hero, start: 'top top', end: '+=170%', scrub: true, pin: true, invalidateOnRefresh: true,
+      trigger: heroTrack, start: 'top top', end: () => '+=' + (heroTrack.offsetHeight - hero.offsetHeight), scrub: true, invalidateOnRefresh: true,
       // At the end the hero shows exactly what the territory's sticky photo shows,
       // so hide it rather than let it scroll away over a copy of itself.
       onLeave: () => gsap.set(hero, { autoAlpha: 0 }),
@@ -180,18 +182,23 @@
   };
   const rnd = (seed) => { const x = Math.sin(seed * 999) * 10000; return x - Math.floor(x); };
   // phones only show the bottom four courses (the CSS hides the rest), so the wall is built from those
+  const stones = $('.stones');
   gsap.matchMedia().add({ phone: PHONE, wide: WIDE }, ({ conditions }) => {
     const build = gsap.timeline({
       scrollTrigger: {
-        trigger: '.stones__viewport', start: 'top top', end: '+=170%', scrub: 0.8, pin: true,
+        // sticky, like the hero: the build runs while the viewport stays put
+        // (no invalidateOnRefresh: it would re-record the stones' from() tweens with the stones still at their start)
+        trigger: stones, start: 'top top', end: () => '+=' + (stones.offsetHeight - $('.stones__viewport').offsetHeight), scrub: 0.8,
         onUpdate: (self) => lightQuote(self.progress),
       },
     });
+    // the drop is in wall units (the frame is 1600 wide), as it was when the stones moved inside one SVG
+    const unit = $('.stones__wall').offsetWidth / 1600;
     $$('.stones__wall .stone').forEach((s, i) => {
       const row = +s.dataset.row;
       if (conditions.phone && row >= 4) return;
       build.from(s, {
-        y: -(70 + rnd(i) * 130), rotation: (rnd(i + 7) - 0.5) * 30, scale: 0.92, opacity: 0,
+        y: -(70 + rnd(i) * 130) * unit, rotation: (rnd(i + 7) - 0.5) * 30, scale: 0.92, opacity: 0,
         transformOrigin: '50% 50%', duration: 0.5, ease: 'power2.out',
       }, row * 0.32 + rnd(i + 3) * 0.3);
     });

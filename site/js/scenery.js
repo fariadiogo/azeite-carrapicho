@@ -218,7 +218,7 @@
           const cx0 = x + sw * between(r, 0.3, 0.7);
           svg += `<path d="M${f(cx0)},${f(sy + sh * 0.12)}l${f(between(r, -6, 6))},${f(sh * 0.3)}l${f(between(r, -5, 5))},${f(sh * 0.32)}" stroke="${shadow}" stroke-width="1.2" fill="none" stroke-opacity=".55"/>`;
         }
-        stones.push({ svg, row });
+        stones.push({ svg, row, box: [x, sy, sw, sh] });
         x += sw + between(r, 2, 6);
       }
       y -= rh + between(r, 1, 4);
@@ -453,11 +453,19 @@
     });
     // the top three courses are left off, so the wall stays clear of the quote
     const rows = wall.rows - 3;
-    const svg = wall.defs + `<rect x="-20" y="${h - 30}" width="${w + 40}" height="50" fill="#3f3b32"/>` + wall.stones
+    // Every stone is its own small <svg>, placed in % of the w×h frame, so the build moves GPU layers rather than
+    // repainting one big wall on every frame. The stones still use the gradient defined in the ground's <svg>.
+    const pct = (n, of) => `${((n / of) * 100).toFixed(3)}%`;
+    const ground = `<svg class="stones__ground" viewBox="0 0 ${w} ${h}">${wall.defs}<rect x="-20" y="${h - 30}" width="${w + 40}" height="50" fill="#3f3b32"/></svg>`;
+    const html = ground + wall.stones
       .filter((s) => s.row < rows)
-      .map((s) => `<g class="stone" data-row="${s.row}">${s.svg}</g>`)
+      .map(({ svg, row, box }) => {
+        const [x, y, bw, bh] = box.map(f);
+        return `<svg class="stone" data-row="${row}" viewBox="${x} ${y} ${bw} ${bh}" preserveAspectRatio="none" ` +
+          `style="left:${pct(x, w)};top:${pct(y, h)};width:${pct(bw, w)};height:${pct(bh, h)}">${svg}</svg>`;
+      })
       .join('');
-    return { svg };
+    return { html };
   }
 
   /* ---------- the fingerprint, as in the label ---------- */

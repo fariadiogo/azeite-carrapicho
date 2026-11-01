@@ -64,7 +64,7 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
 | `site/index.html` | Every section, in page order (outline below). |
 | `site/css/style.css` | One stylesheet, in page order. Colour tokens are on `:root`. The landscape-phone block and the `.no-motion` fallback are at the end. |
 | `site/js/main.js` | All the motion (GSAP, ScrollTrigger, Lenis). The `PHONE` and `WIDE` media strings are at the top. Under reduced motion it adds `.no-motion` and stops before any animation. |
-| `site/js/scenery.js` | Procedural SVG with a seeded random generator: the hero's dawn landscape and the closing dusk, both in parallax layers, plus the daisies, the dry-stone wall for section 02 (`buildWall`) and the stand-in fingerprint. |
+| `site/js/scenery.js` | Procedural SVG with a seeded random generator: the hero's dawn landscape and the closing dusk, both in parallax layers, plus the daisies, the dry-stone wall for section 02 (`buildWall`, which returns HTML: one small `<svg>` per stone) and the stand-in fingerprint. |
 | `site/assets/img/` | Only the photos the page uses. They are copies of Instagram images; each one's source post is in docs/sources.md. They are WebP, sized to how big they're drawn (by `tools/photos.py`), plus `share.jpg`, the 1200×630 link-preview image. |
 | `.github/workflows/pages.yml` | Deploys `site/` to GitHub Pages on every push to `main`. |
 | `site/favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | A temporary icon of ours (an olive and a leaf), until the logo arrives. |
@@ -77,10 +77,10 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
 
 ## Page outline
 
-1. **Hero:** the serra at dawn, drawn as SVG layers. The section is pinned. The scene starts empty, then as you scroll a sun rises behind the name. The aerial photo then opens out of the sun, through a radial mask driven by `--r`.
+1. **Hero:** the serra at dawn, drawn as SVG layers. The section stays put while you scroll (sticky in `.hero-track`). The scene starts empty, then as you scroll a sun rises behind the name. The aerial photo then opens out of the sun, through a radial mask driven by `--r`.
 2. **01 Território:** a sticky aerial photo with a glass card over it.
 3. **Cycle, pasture and documentary:** the cycle quote, the animals text with three photos, and a card for the "Rostos da Aldeia" documentary, which opens a YouTube modal.
-4. **02 Pedra sobre pedra:** a pinned section. The dry-stone wall builds stone by stone while the quote lights up word by word. The wall has 6 courses on wide screens and 4 on phones. Below it, the stone-maze aerial photo.
+4. **02 Pedra sobre pedra:** a section that stays put while you scroll (sticky in `.stones`). The dry-stone wall builds stone by stone while the quote lights up word by word. The wall has 6 courses on wide screens and 4 on phones. Below it, the stone-maze aerial photo.
 5. **03 Legado:**
    - A "1987" drawn in outline, on the right.
    - The archive harvest photo.
@@ -127,6 +127,12 @@ There is no build step. GSAP 3.12.5 with ScrollTrigger loads from cdnjs, and Len
   - the drawn SVGs (`.layer`, `.stones__wall`) have `pointer-events: none`, so Chrome keeps no touch target per shape;
   - the never-ending animations (clouds `.drift`, branch `.sway`) sit on wrapper `<div>`s. On an `<svg>`, or inside one, Chrome can't run them on the GPU;
   - Lenis runs only with a mouse or trackpad (`(hover: hover) and (pointer: fine)`). Its blocking touch listeners made phones wait for the main thread on every scroll.
+  - each wall stone is its own small `<svg>` with `will-change: transform`, so the build moves layers instead of repainting the whole wall on every frame.
+- **On iPhones, sections that stay put must use CSS `position: sticky`, not ScrollTrigger pins.** The user saw pinned parts jump and a strip of the next section at the bottom (2026-11-01). Since then:
+  - the hero and the wall are sticky inside a tall track (`.hero-track`, `.stones`, both 270lvh). Their timelines run over `track height − stage height`, without `pin`. iOS scrolls on its own thread, so a pin set from JS landed a frame late and jumped. O Ano's sideways pin is desktop-only and still a ScrollTrigger pin;
+  - full-screen stages that stay put are `100lvh`, the height with the toolbar shrunk, so nothing shows below them. What sits on the hero keeps the toolbar-visible layout through `--bar` (`100lvh − 100svh`, set on `:root`; 0 on desktop and in the user's pane): the landscape layers, the title's bottom padding and the cue;
+  - don't put `invalidateOnRefresh` on a timeline built from `from()` tweens, like the wall. On refresh it re-records them from the current state, and the stones never appear;
+  - none of this shows in Chrome or the user's pane, where `lvh` equals `svh`. Check on a real iPhone, or in the iOS Simulator once Xcode is installed (it isn't, as of 2026-11-01).
 - **The user views the page in the Claude desktop app's built-in browser pane**, at about 345×811. Ask them to check visual and animation changes there.
 - **Breakpoints:**
   - ≤900px: tablets and phones in portrait. The nav links hide.
